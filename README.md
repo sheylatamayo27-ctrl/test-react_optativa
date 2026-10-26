@@ -33,7 +33,15 @@ npm run dev
 ```
 Abre la dirección que muestra la terminal (normalmente http://localhost:5173).
 
-## Cómo publicarlo (producción)
+## Enlace para los alumnos
+**https://sheylatamayo27-ctrl.github.io/test-react_optativa/**
+
+Se publica solo en GitHub Pages cada vez que se sube un cambio a la rama `main`
+(ver `.github/workflows/deploy.yml`). El progreso de la publicación se ve en la
+pestaña **Actions** del repositorio; si las pruebas unitarias fallan, no se publica
+y sigue en línea la versión anterior.
+
+## Cómo publicarlo en otro hosting
 ```bash
 npm run build
 ```
