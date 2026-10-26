@@ -167,3 +167,20 @@ test("antes de terminar no se muestra la nota", async ({ page }) => {
   await page.getByRole("button", { name: /Continuar la evaluación/ }).click();
   await expect(page.locator(".q-topic")).toBeVisible();
 });
+
+test("la evaluación y el repaso de errores llevan marca de agua con nombre y grupo", async ({ page }) => {
+  const wm = page.locator(".quiz .watermark");
+  await expect(wm).toHaveAttribute("data-text", /^María González · Grupo 3°A · \d{2}\/\d{2}\/\d{4}$/);
+  // No bloquea nada: la capa no recibe clics y las opciones siguen funcionando
+  await expect(wm).toHaveCSS("pointer-events", "none");
+  await answerCurrent(page, false);
+  await expect(page.locator(".fb.bad")).toBeVisible();
+
+  // La lección no lleva marca de agua
+  await page.locator(".tab", { hasText: "Lección" }).click();
+  await expect(page.locator(".watermark")).toHaveCount(0);
+
+  // El repaso de errores (donde se ven las respuestas correctas) también la lleva
+  await finishWith(page, 15);
+  await expect(page.locator(".review.protected .watermark")).toHaveAttribute("data-text", /Ana Torres · Grupo 402/);
+});

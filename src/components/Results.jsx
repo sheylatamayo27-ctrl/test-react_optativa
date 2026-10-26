@@ -4,6 +4,8 @@ import { grade } from "../lib/progress.js";
 import { moduleStats } from "./ModuleView.jsx";
 import { Code, Md } from "./Bits.jsx";
 import { generarCertificado, certCode } from "../lib/certificate.js";
+import { watermarkText } from "../lib/watermark.js";
+import Watermark from "./Watermark.jsx";
 
 function Ring({ pct, passed }) {
   const r = 66, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
@@ -179,7 +181,8 @@ export default function Results({ exam, attempt, best, onRestart, studentName, g
 
       {failed.length > 0 && (
         <section className="wrap">
-          <div className="card review">
+          <div className="card review protected">
+            <Watermark text={watermarkText(studentName, group)} />
             <h3>📌 Repaso de tus errores</h3>
             <p className="muted" style={{ marginBottom: 12, fontSize: ".92rem" }}>
               Estas son las preguntas que fallaste, con la respuesta correcta y la idea clave para tenerla en cuenta la próxima vez.

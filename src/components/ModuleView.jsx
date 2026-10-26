@@ -5,7 +5,7 @@ import Quiz from "./Quiz.jsx";
 
 export default function ModuleView({
   module, tab, setTab, seed, answers, hints, onAnswer, onHint, onFinish, onHome, isLast,
-  initialQ, onQuestion,
+  initialQ, onQuestion, watermark,
 }) {
   const stats = moduleStats(module, answers);
 
@@ -60,6 +60,7 @@ export default function ModuleView({
         <Lesson module={module} focus={focus} onHome={onHome} onQuiz={goQuiz} />
       ) : (
         <Quiz
+          watermark={watermark}
           module={module}
           order={order}
           idx={qIdx}

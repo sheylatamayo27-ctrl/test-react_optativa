@@ -4,6 +4,7 @@ import { buildExam } from "./data/exam.js";
 import { loadState, saveState } from "./lib/storage.js";
 import { loadPrefs, savePrefs, applyPrefs } from "./lib/prefs.js";
 import { answerInfo } from "./lib/util.js";
+import { watermarkText } from "./lib/watermark.js";
 import { applyAnswer, grade, restorePosition, validQuestion, resumeMessage } from "./lib/progress.js";
 import { useOnline } from "./lib/useOnline.js";
 import { moduleStats } from "./components/ModuleView.jsx";
@@ -229,6 +230,7 @@ export default function App() {
         )}
         {screen === "module" && (
           <ModuleView
+            watermark={watermarkText(name, group)}
             key={exam[mi].id + "-" + seed}
             module={exam[mi]}
             tab={tab}
