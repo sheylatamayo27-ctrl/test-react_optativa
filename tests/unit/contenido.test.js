@@ -5,7 +5,7 @@ import { MODULES, PASS_CORRECT, COURSE, totalQuestions } from "../../src/data/mo
 import { DEMOS } from "../../src/components/Demos.jsx";
 import { BANK, slotOf } from "../../src/data/exam.js";
 
-// Todas las preguntas del banco: originales + versiones alternativas (60)
+// Todas las preguntas del banco: originales + versiones alternativas (80)
 const questions = BANK.flatMap((m) => m.questions.map((q) => ({ m, q })));
 
 describe("curso", () => {
@@ -14,16 +14,16 @@ describe("curso", () => {
     expect(PASS_CORRECT).toBe(12);
     expect(PASS_CORRECT).toBeLessThanOrEqual(totalQuestions());
     expect(totalQuestions()).toBe(20); // 20 preguntas → 5% cada una
-    expect(questions.length).toBe(60); // 20 huecos × 3 versiones
+    expect(questions.length).toBe(80); // 20 huecos × 4 versiones
   });
 
-  it("cada hueco tiene exactamente 3 versiones, todas del mismo módulo", () => {
+  it("cada hueco tiene exactamente 4 versiones, todas del mismo módulo", () => {
     for (const m of BANK) {
       const originals = MODULES.find((x) => x.id === m.id).questions.map((q) => q.id);
       const bySlot = {};
       for (const q of m.questions) (bySlot[slotOf(q)] ||= []).push(q.id);
       expect(Object.keys(bySlot).sort(), m.id).toEqual([...originals].sort());
-      for (const [slot, ids] of Object.entries(bySlot)) expect(ids, slot).toHaveLength(3);
+      for (const [slot, ids] of Object.entries(bySlot)) expect(ids, slot).toHaveLength(4);
     }
   });
 

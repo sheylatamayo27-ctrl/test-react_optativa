@@ -14,7 +14,7 @@ un cuestionario y, al aprobar, descarguen un **certificado en PDF** con su nombr
   sección exacta** de la lección.
 - **Modo claro / oscuro / sistema** y tamaño de texto ajustable (icono de engranaje).
 - Atajos de teclado en la práctica: A–D o 1–4 para responder, ← → para navegar, H pista.
-- **Banco de 60 preguntas**: cada una de las 20 preguntas del test tiene **3 versiones** sobre el
+- **Banco de 80 preguntas**: cada una de las 20 preguntas del test tiene **4 versiones** sobre el
   mismo concepto. Cada intento sortea una versión de cada una, con orden y opciones barajados.
 - **Empezar de nuevo** cuando el alumno quiera: salen otras preguntas y el certificado conserva
   el **mejor aprobado**.

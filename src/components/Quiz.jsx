@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { answerInfo } from "../lib/util.js";
 import { moduleStats } from "./ModuleView.jsx";
 import Question from "./Question.jsx";
-import Watermark from "./Watermark.jsx";
 
 function segClass(a) {
   if (!a.answered) return "";
@@ -37,7 +36,7 @@ function ModuleDone({ module, answers, hints, isLast, onFinish }) {
 }
 
 export default function Quiz({
-  watermark, module, order, idx, setIdx, seed, answers, hints, onAnswer, onHint, onFinish, onReview, isLast,
+  module, order, idx, setIdx, seed, answers, hints, onAnswer, onHint, onFinish, onReview, isLast,
 }) {
   const i = Math.min(idx, order.length - 1);
   const q = order[i];
@@ -65,7 +64,6 @@ export default function Quiz({
 
   return (
     <div className="wrap quiz">
-      <Watermark text={watermark} />
       <div className="q-progress">
         <span className="lbl">
           Pregunta {i + 1} de {order.length}

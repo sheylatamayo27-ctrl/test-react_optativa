@@ -34,14 +34,14 @@ describe("buildExam: preguntas de cada intento", () => {
     expect(combos.size).toBeGreaterThan(45);
   });
 
-  it("con el tiempo salen las 3 versiones de cada pregunta, de forma equilibrada", () => {
+  it("con el tiempo salen las 4 versiones de cada pregunta, de forma equilibrada", () => {
     const count = {};
     const N = 600;
     for (let i = 0; i < N; i++) for (const id of ids(buildExam(i * 104729 + 13))) count[id] = (count[id] || 0) + 1;
     const all = BANK.flatMap((m) => m.questions.map((q) => q.id));
     for (const id of all) {
-      expect(count[id], id).toBeGreaterThan(N * 0.2); // cada versión ≈ 1/3 de las veces (mín. 20%)
-      expect(count[id], id).toBeLessThan(N * 0.47);
+      expect(count[id], id).toBeGreaterThan(N * 0.15); // cada versión ≈ 1/4 de las veces (mín. 15%)
+      expect(count[id], id).toBeLessThan(N * 0.36);
     }
   });
 

@@ -319,9 +319,6 @@ pre.code.mini{font-size:.8rem;padding:10px 12px}
 
 /* quiz */
 .quiz{padding:22px 18px 44px;max-width:816px;margin:0 auto;position:relative}
-.protected{position:relative}
-.watermark{position:absolute;inset:0;z-index:5;pointer-events:none;user-select:none;background-repeat:repeat;background-position:center top}
-@media print{.watermark{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 .q-progress{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .q-progress .lbl{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);white-space:nowrap}
 .segs{flex:1;display:flex;gap:4px}

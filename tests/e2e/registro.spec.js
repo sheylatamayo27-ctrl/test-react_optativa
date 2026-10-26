@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { register } from "./helpers.js";
+import { buildExam } from "../../src/data/exam.js";
 
 test("pide nombre, apellidos y grupo, y muestra la optativa", async ({ page }) => {
   await page.goto("./");
@@ -20,14 +21,16 @@ test("pide nombre, apellidos y grupo, y muestra la optativa", async ({ page }) =
 });
 
 test("un alumno con progreso antiguo (sin grupo) completa sus datos sin perder respuestas", async ({ page }) => {
+  // Una respuesta guardada para la versión de la primera pregunta que sale con esta semilla
+  const qid = buildExam(42)[0].questions[0].id;
   await page.goto("./");
-  await page.evaluate(() =>
+  await page.evaluate((qid) =>
     localStorage.setItem("react-lab-v2", JSON.stringify({
       name: "Luis Pérez Ramos",
       seed: 42,
-      answers: { m1q1: { optId: "a", correct: true } },
+      answers: { [qid]: { optId: "a", correct: true } },
       hints: {},
-    }))
+    })), qid
   );
   await page.reload();
 
