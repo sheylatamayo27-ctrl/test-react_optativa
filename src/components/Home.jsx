@@ -94,7 +94,7 @@ export default function Home({ exam, studentName, group, answers, attempt, best,
             <span className="how-ic">▶</span>
             <div>
               <b>2. Experimenta</b>
-              <span>Demos en vivo para ver cada concepto funcionando antes de responder.</span>
+              <span>Ejemplos interactivos para ver cada concepto funcionando antes de responder.</span>
             </div>
           </div>
           <div className="how-step">

@@ -123,7 +123,7 @@ export const MODULES = [
         prompt: "¿Qué debe devolver un componente funcional en React?",
         options: [
           { id: "a", text: "JSX: la descripción de la interfaz que se mostrará", correct: true, feedback: "Un componente es una función que retorna JSX. React toma ese resultado y lo convierte en elementos reales del navegador. Todo lo que esté en el `return` es lo que el usuario verá." },
-          { id: "b", text: "Un objeto JSON con datos", correct: false, feedback: "Un componente puede *usar* datos (por ejemplo, de un JSON), pero lo que devuelve es la **interfaz** que se debe dibujar, no los datos en sí. Si devolvieras un objeto, React lanzaría un error: *Objects are not valid as a React child*." },
+          { id: "b", text: "Un objeto JSON con datos", correct: false, feedback: "Un componente puede *usar* datos (por ejemplo, de un JSON), pero lo que devuelve es la **interfaz** que se debe dibujar, no los datos en sí. Si devolvieras un objeto, React lanzaría un error: *Los objetos no son válidos como hijo de React*." },
           { id: "c", text: "Siempre una cadena de texto", correct: false, feedback: "Puede devolver texto, pero no está limitado a eso: lo normal es devolver estructuras JSX completas con etiquetas, otros componentes y expresiones `{ }`." },
           { id: "d", text: "Nada; no devuelven valores", correct: false, feedback: "Sí devuelven, y es lo más importante: su `return` es justo lo que React pinta. Un componente sin `return` no muestra nada en pantalla." },
         ],
@@ -140,7 +140,7 @@ export const MODULES = [
         options: [
           { id: "a", text: "Para que React identifique cada elemento y actualice la lista de forma eficiente", correct: true, feedback: "La `key` es la **identidad** de cada elemento. Cuando la lista cambia, React usa las keys para saber cuál se agregó, cuál se borró y cuál se movió, y así actualiza solo lo necesario sin confundir elementos." },
           { id: "b", text: "Para darle color o estilo a cada tarjeta", correct: false, feedback: "El estilo se controla con `className` o CSS. La `key` no llega al HTML ni afecta la apariencia: es información interna para React." },
-          { id: "c", text: "Solo para que no salga un aviso en consola", correct: false, feedback: "Es cierto que sin key aparece el aviso *Each child in a list should have a unique \"key\" prop*, pero ese aviso existe porque sin key React puede **mezclar el estado** de los elementos al cambiar la lista (prueba la demo de la lección)." },
+          { id: "c", text: "Solo para que no salga un aviso en consola", correct: false, feedback: "Es cierto que sin key aparece el aviso *Cada hijo de una lista debe tener una prop \"key\" única*, pero ese aviso existe porque sin key React puede **mezclar el estado** de los elementos al cambiar la lista (prueba la demo de la lección)." },
           { id: "d", text: "Para ordenar la lista alfabéticamente", correct: false, feedback: "`key` no ordena nada. Para ordenar, ordenas el array antes de recorrerlo (por ejemplo con `.sort()`) y luego haces `.map()`." },
         ],
         teach: "`key` le dice a React “este elemento es el mismo de antes” cuando la lista cambia.",
@@ -211,7 +211,7 @@ export const MODULES = [
         ],
         options: [
           { id: "a", code: "{products.map((p) => (\n  <li key={p.id}>{p.name}</li>\n))}", correct: true, feedback: "Hay **dos** problemas y esta opción arregla ambos: `.map()` sí devuelve el array de `<li>` (por eso ahora se ve la lista) y `key={p.id}` da a cada elemento una identidad única y estable." },
-          { id: "b", code: "{products.map((p) => (\n  <li>{p.name}</li>\n))}", correct: false, feedback: "Ahora la lista sí se ve, pero queda a medias: falta la `key`. React mostrará el aviso *Each child in a list should have a unique \"key\" prop* y puede confundir elementos cuando la lista cambie." },
+          { id: "b", code: "{products.map((p) => (\n  <li>{p.name}</li>\n))}", correct: false, feedback: "Ahora la lista sí se ve, pero queda a medias: falta la `key`. React mostrará el aviso *Cada hijo de una lista debe tener una prop \"key\" única* y puede confundir elementos cuando la lista cambie." },
           { id: "c", code: "{products.forEach((p) => (\n  <li key={p.id}>{p.name}</li>\n))}", correct: false, feedback: "Agregaste la key, pero el problema principal sigue: `.forEach()` devuelve `undefined`, así que no se pinta nada. Hay que cambiarlo por `.map()`." },
           { id: "d", code: "{products.map((p) => (\n  <li key={Math.random()}>{p.name}</li>\n))}", correct: false, feedback: "Se ve la lista, pero `Math.random()` genera una key **distinta en cada render**: React cree que todos los elementos son nuevos y los destruye y vuelve a crear siempre. La key debe ser estable: usa `p.id`." },
         ],
@@ -271,10 +271,10 @@ export const MODULES = [
         },
       },
       { h: "Eventos: cambiar el estado con onClick", id: "onclick" },
-      { p: "Los elementos reaccionan a eventos con props en **camelCase**: `onClick`, `onChange`, `onSubmit`. A `onClick` se le pasa **una función** que React ejecutará **cuando ocurra el clic**, no antes." },
+      { p: "Los elementos reaccionan a eventos con props escritas en **camelCase** (cada palabra nueva empieza con mayúscula): `onClick`, `onChange`, `onSubmit`. A `onClick` se le pasa **una función** que React ejecutará **cuando ocurra el clic**, no antes." },
       {
         compare: {
-          bad: { code: '<button onClick={setColor("Rojo")}>\n  Rojo\n</button>', note: "`setColor(\"Rojo\")` **se ejecuta al dibujar**: cambia el estado → re-render → se ejecuta otra vez… bucle infinito (*Too many re-renders*)." },
+          bad: { code: '<button onClick={setColor("Rojo")}>\n  Rojo\n</button>', note: "`setColor(\"Rojo\")` **se ejecuta al dibujar**: cambia el estado → re-render → se ejecuta otra vez… bucle infinito (*Demasiados re-renders*)." },
           good: { code: '<button onClick={() => setColor("Rojo")}>\n  Rojo\n</button>', note: "La función flecha **envuelve** la llamada: se ejecuta solo al hacer clic." },
         },
       },
@@ -358,7 +358,7 @@ export const MODULES = [
         prompt: '¿Cuál es el botón correcto para poner el color en `"Rojo"`? Fíjate bien en cada detalle: algunas opciones se parecen mucho.',
         options: [
           { id: "a", code: '<button onClick={() => setColor("Rojo")}>Rojo</button>', correct: true, feedback: "La función flecha `() => ...` le entrega a React **una función para más tarde**. React la ejecuta solo cuando el usuario hace clic, y entonces se llama a `setColor(\"Rojo\")`." },
-          { id: "b", code: '<button onClick={setColor("Rojo")}>Rojo</button>', correct: false, feedback: "Aquí `setColor(\"Rojo\")` se **ejecuta al dibujar** el botón, no al hacer clic. Eso cambia el estado → re-render → se ejecuta otra vez… y React corta con el error *Too many re-renders*." },
+          { id: "b", code: '<button onClick={setColor("Rojo")}>Rojo</button>', correct: false, feedback: "Aquí `setColor(\"Rojo\")` se **ejecuta al dibujar** el botón, no al hacer clic. Eso cambia el estado → re-render → se ejecuta otra vez… y React corta con el error *Demasiados re-renders*." },
           { id: "c", code: '<button click={() => setColor("Rojo")}>Rojo</button>', correct: false, feedback: "Se parece mucho a la correcta, pero fíjate en el atributo: dice `click` en lugar de `onClick`. En React los eventos siempre llevan el prefijo `on` en camelCase (`onClick`, `onChange`…). `click` no es un evento reconocido, así que el botón no haría nada al pulsarlo." },
           { id: "d", code: '<button onClick={() => color = "Rojo"}>Rojo</button>', correct: false, feedback: "Asignar a mano no avisa a React (y con `const` incluso da error). El estado solo se cambia con su setter: `setColor(\"Rojo\")`." },
         ],
@@ -407,7 +407,7 @@ export const MODULES = [
         options: [
           { id: "a", code: "const [likes, setLikes] = useState(0);\n\n<button onClick={() => setLikes(likes + 1)}>\n  ❤ {likes}\n</button>", correct: true, feedback: "Cambias la variable normal por **estado** y la actualizas con su **setter** dentro de una función flecha. Cada clic llama a `setLikes`, React vuelve a renderizar y muestra el número nuevo." },
           { id: "b", code: "const [likes, setLikes] = useState(0);\n\n<button onClick={() => likes++}>\n  ❤ {likes}\n</button>", correct: false, feedback: "Declaraste el estado, pero lo sigues cambiando a mano con `likes++`. Eso no avisa a React (y con `const` incluso falla). Hay que usar `setLikes(likes + 1)`." },
-          { id: "c", code: "const [likes, setLikes] = useState(0);\n\n<button onClick={setLikes(likes + 1)}>\n  ❤ {likes}\n</button>", correct: false, feedback: "Sin la función flecha, `setLikes(likes + 1)` se ejecuta **al renderizar**: cambia el estado → nuevo render → se ejecuta otra vez… React corta con *Too many re-renders*." },
+          { id: "c", code: "const [likes, setLikes] = useState(0);\n\n<button onClick={setLikes(likes + 1)}>\n  ❤ {likes}\n</button>", correct: false, feedback: "Sin la función flecha, `setLikes(likes + 1)` se ejecuta **al renderizar**: cambia el estado → nuevo render → se ejecuta otra vez… React corta con *Demasiados re-renders*." },
           { id: "d", code: "let likes = 0;\n\n<button onClick={() => {\n  likes++;\n  console.log(likes);\n}}>\n  ❤ {likes}\n</button>", correct: false, feedback: "La consola mostrará 1, 2, 3…, pero la pantalla sigue en 0: una variable normal no provoca re-render. Necesitas `useState`." },
         ],
         teach: "Si un valor debe verse actualizado en pantalla, va en `useState` y se cambia con su setter.",
@@ -425,7 +425,7 @@ export const MODULES = [
     id: "m3",
     num: 3,
     title: "Hooks y Consumo de APIs",
-    sub: "useEffect · fetch · custom hook",
+    sub: "useEffect · fetch · hooks personalizados",
     desc: "Pide datos a una API con un hook propio que maneja carga, error y resultado.",
     lesson: [
       {
@@ -433,7 +433,7 @@ export const MODULES = [
           "Saber qué es un **efecto secundario** y por qué va en `useEffect`.",
           "Controlar cuándo se ejecuta un efecto con el **array de dependencias**.",
           "Pedir datos con `fetch` y manejar **carga, error y datos** en el orden correcto.",
-          "Crear un **custom hook** y adaptarlo a otra API leyendo su documentación.",
+          "Crear un **hook personalizado** y adaptarlo a otra API leyendo su documentación.",
         ],
       },
       { h: "Efectos secundarios", id: "efectos" },
@@ -472,12 +472,12 @@ export const MODULES = [
       },
       {
         compare: {
-          bad: { code: "const { data, loading } = usePokemon(id);\n\nreturn <h3>{data.name}</h3>;\n// TypeError: Cannot read properties\n// of null (reading 'name')", note: "En el primer render `data` es `null`, y `null.name` rompe la app." },
+          bad: { code: "const { data, loading } = usePokemon(id);\n\nreturn <h3>{data.name}</h3>;\n// Error de tipo: no se pueden leer propiedades\n// de null (leyendo 'name')", note: "En el primer render `data` es `null`, y `null.name` rompe la app." },
           good: { code: "const { data, loading, error } = usePokemon(id);\n\nif (loading) return <p>Cargando...</p>;\nif (error) return <p>No se pudo cargar.</p>;\nreturn <h3>{data.name}</h3>;", note: "Cuando llegas a la última línea, es seguro que `data` existe." },
         },
       },
-      { h: "Custom hooks: lógica reutilizable", id: "hook" },
-      { p: "Un **custom hook** es una función cuyo nombre empieza por `use` y que agrupa estados y efectos para reutilizarlos. El componente queda limpio: solo pide los datos y decide cómo mostrarlos." },
+      { h: "Hooks personalizados: lógica reutilizable", id: "hook" },
+      { p: "Un **hook personalizado** es una función cuyo nombre empieza por `use` y que agrupa estados y efectos para reutilizarlos. El componente queda limpio: solo pide los datos y decide cómo mostrarlos." },
       {
         ex: {
           h: "usePokemon.js",
@@ -532,7 +532,7 @@ export const MODULES = [
       },
       {
         ex: {
-          h: "Ejemplo: de Pokémon a personajes de Rick and Morty",
+          h: "Ejemplo: de Pokémon a personajes de Rick y Morty",
           code:
             "// Documentación: GET https://rickandmortyapi.com/api/character/{id}\n\n" +
             "export function useCharacter(id) {\n" +
@@ -557,7 +557,7 @@ export const MODULES = [
           "Pedir datos es un efecto secundario: va dentro de `useEffect`.",
           "`[id]` → se repite cuando `id` cambia · `[]` → una vez · sin array → cada render (peligro de bucle).",
           "Orden seguro al pintar: **loading → error → data**.",
-          "Custom hook = función `useAlgo` que agrupa estados + efecto y devuelve `{ data, loading, error }`.",
+          "Hook personalizado = función `useAlgo` que agrupa estados + efecto y devuelve `{ data, loading, error }`.",
           "Para otra API: cambia la URL según la documentación; la estructura se reutiliza.",
         ],
       },
@@ -600,7 +600,7 @@ export const MODULES = [
         prompt: "Al pintar datos de una API, ¿en qué orden conviene comprobar los estados?",
         options: [
           { id: "a", text: "Primero loading, luego error, y solo al final usar data", correct: true, feedback: "Mientras carga, `data` es `null`; si hubo error, `data` tampoco sirve. Comprobando primero `loading` y luego `error`, cuando llegas a usar `data` es seguro que ya existe." },
-          { id: "b", text: "Usar data directamente sin comprobar nada", correct: false, feedback: "En el primer render `data` todavía es `null`, así que `data.name` lanza *Cannot read properties of null* y la app se rompe." },
+          { id: "b", text: "Usar data directamente sin comprobar nada", correct: false, feedback: "En el primer render `data` todavía es `null`, así que `data.name` lanza *No se pueden leer propiedades de null* y la app se rompe." },
           { id: "c", text: "Primero data, luego loading", correct: false, feedback: "Leer `data` antes de saber si terminó de cargar es exactamente lo que provoca el error de `null`. La comprobación de `loading` tiene que ir antes." },
           { id: "d", text: "No hace falta manejar error", correct: false, feedback: "Las redes fallan (sin internet, servidor caído, id inexistente). Sin manejar el error, el usuario se queda con una pantalla rota o en blanco." },
         ],
@@ -638,7 +638,7 @@ export const MODULES = [
         example: {
           title: "Versión corregida",
           code: 'useEffect(() => {\n  fetch("https://api.ejemplo.com/noticias")\n    .then((r) => r.json())\n    .then((json) => setNoticias(json));\n}, []); // ← una sola vez, al montar',
-          note: "Si ves cientos de peticiones en la pestaña *Network* del navegador, revisa el array de dependencias.",
+          note: "Si ves cientos de peticiones en la pestaña *Red* de las herramientas del navegador (F12), revisa el array de dependencias.",
         },
       },
       /* --- EJERCICIO APLICADO: modificar el hook de Pokémon para traer usuarios --- */
@@ -733,7 +733,7 @@ export const MODULES = [
             feedback: "Sin `/${id}`, ese endpoint devuelve la **lista completa** (un array), no un usuario. `data.name` sería `undefined` porque un array no tiene `name`. Para un solo usuario se usa `/users/${id}`.",
           },
         ],
-        teach: "Un custom hook bien hecho se adapta a otra API cambiando la URL del fetch: la estructura (estados, `[id]`, `return`) se reutiliza igual.",
+        teach: "Un hook personalizado bien hecho se adapta a otra API cambiando la URL del fetch: la estructura (estados, `[id]`, `return`) se reutiliza igual.",
         hint: "Compara la URL del fetch con el endpoint de la documentación y revisa las dependencias `[id]`. ¿Qué es lo **único** que debería cambiar?",
         example: {
           title: "Hook final, con nombre acorde a lo que hace",
@@ -775,7 +775,7 @@ export const MODULES = [
         ],
       },
       { h: "¿Qué es una SPA?", id: "spa" },
-      { p: "En una web tradicional, cada clic en un enlace pide al servidor una **página HTML nueva**: el navegador se queda en blanco, recarga todo y se pierde lo que había en memoria. Una **SPA** (*Single Page Application*) carga una sola vez y, al navegar, **solo cambia el contenido** necesario. Es más rápida y conserva el estado (el carrito, un formulario a medio llenar, la sesión)." },
+      { p: "En una web tradicional, cada clic en un enlace pide al servidor una **página HTML nueva**: el navegador se queda en blanco, recarga todo y se pierde lo que había en memoria. Una **SPA** (*aplicación de una sola página*) carga una sola vez y, al navegar, **solo cambia el contenido** necesario. Es más rápida y conserva el estado (el carrito, un formulario a medio llenar, la sesión)." },
       { analogy: "Una web tradicional es como **apagar y encender el televisor** cada vez que cambias de canal. Una SPA es usar el **control remoto**: el canal cambia al instante y el televisor sigue encendido." },
       { p: "React por sí solo no trae navegación entre páginas. La librería estándar es **react-router-dom**:" },
       { code: "npm install react-router-dom" },
@@ -913,8 +913,8 @@ export const MODULES = [
         prompt: "¿Dónde debe colocarse `<BrowserRouter>`?",
         options: [
           { id: "a", text: "Envolviendo toda la app (menú y rutas van dentro de él)", correct: true, feedback: "`BrowserRouter` crea el “contexto” de navegación. Todo lo que esté dentro (`Routes`, `Link`, menú…) puede usarlo. Se pone **una sola vez**, normalmente envolviendo `<App />` en `main.jsx`." },
-          { id: "b", text: "Dentro de cada <Route>, repetido", correct: false, feedback: "Solo debe haber **uno** en toda la app. Anidar varios `BrowserRouter` provoca el error *You cannot render a <Router> inside another <Router>*." },
-          { id: "c", text: "No hace falta usarlo", correct: false, feedback: "Sin él, `Routes` y `Link` no tienen contexto de navegación y React Router lanza un error como *useRoutes() may be used only in the context of a <Router>*." },
+          { id: "b", text: "Dentro de cada <Route>, repetido", correct: false, feedback: "Solo debe haber **uno** en toda la app. Anidar varios `BrowserRouter` provoca el error *No se puede renderizar un <Router> dentro de otro <Router>*." },
+          { id: "c", text: "No hace falta usarlo", correct: false, feedback: "Sin él, `Routes` y `Link` no tienen contexto de navegación y React Router lanza un error como *useRoutes() solo puede usarse dentro de un <Router>*." },
           { id: "d", text: "Solo alrededor del <h1>", correct: false, feedback: "Si solo envuelve el `<h1>`, el menú y las rutas quedan fuera y no funcionan. Debe envolver **toda** la app." },
         ],
         teach: "`BrowserRouter` envuelve toda la app una sola vez (normalmente en `main.jsx`).",
