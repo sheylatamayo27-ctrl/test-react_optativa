@@ -104,9 +104,10 @@ export default function Settings({ prefs, setPrefs }) {
             />
           </div>
           <div className="pop-sec">
-            <div className="pop-lbl">Atajos en la práctica</div>
+            <div className="pop-lbl">Atajos en la evaluación</div>
             <ul className="keys">
-              <li><kbd>A</kbd>–<kbd>D</kbd> o <kbd>1</kbd>–<kbd>4</kbd> elegir opción</li>
+              <li><kbd>A</kbd>–<kbd>D</kbd> o <kbd>1</kbd>–<kbd>4</kbd> marcar opción</li>
+              <li><kbd>Enter</kbd> confirmar respuesta</li>
               <li><kbd>→</kbd> siguiente · <kbd>←</kbd> anterior</li>
               <li><kbd>H</kbd> ver pista</li>
             </ul>

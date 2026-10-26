@@ -17,14 +17,17 @@ un cuestionario y, al aprobar, descarguen un **certificado en PDF** con su nombr
 - Preguntas en **orden aleatorio** (y opciones barajadas) distinto para cada alumno.
 - Un **ejercicio práctico** por módulo. Por ejemplo: se muestra un hook que trae Pokémon y la documentación
   de una API de usuarios; el alumno debe elegir cómo **modificar el hook** para traer usuarios.
-- **Pistas** en cada pregunta y reintento hasta acertar.
+- **Evaluación con nota real**: cada pregunta tiene **un solo intento** (se elige y se confirma).
+  Tras responder se muestran la respuesta correcta y su explicación. Cada correcta vale 5%.
+- **Pistas** en cada pregunta, sin penalización.
 - **Autoguardado** en el navegador (sobrevive a cierres/apagones del mismo equipo) y
   **vuelve al sitio exacto** donde estaba el alumno: módulo, lección o práctica, y pregunta.
 - **Funciona sin conexión (PWA)**: tras abrirlo una vez con internet, el test se puede
   abrir, completar y descargar el certificado aunque no haya conexión. Indicador
   "Sin conexión" en la cabecera y aviso cuando hay una versión nueva.
-- Al aprobar (**60%** o más): **certificado PDF** profesional con nombre, grupo,
-  calificación, fecha y código de verificación.
+- Se aprueba con **12 de 20** correctas (60%): **certificado PDF** con nombre, grupo,
+  calificación, fecha y código de verificación. Sin reintentos: si no aprueba, ve el
+  repaso de sus errores pero no puede corregirlos.
 
 ## Cómo ejecutarlo en desarrollo
 ```bash
@@ -106,4 +109,4 @@ está en `src/data/modules.js`. Cada pregunta marca su opción correcta con
 `correct: true`, así que puedes reordenar las opciones sin romper la evaluación.
 Al inicio de ese archivo hay una lista de los tipos de bloque disponibles para las
 lecciones y de los campos de cada pregunta (`ref`, `teach`, `hint`, `example`).
-La nota mínima para aprobar es la constante `PASS` en ese mismo archivo.
+El número de respuestas correctas para aprobar es la constante `PASS_CORRECT` en ese mismo archivo.

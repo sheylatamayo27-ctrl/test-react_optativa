@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MODULES } from "./data/modules.js";
-import { loadState, saveState, clearState } from "./lib/storage.js";
+import { loadState, saveState } from "./lib/storage.js";
 import { loadPrefs, savePrefs, applyPrefs } from "./lib/prefs.js";
 import { answerInfo } from "./lib/util.js";
 import { applyAnswer, restorePosition, validQuestion, resumeMessage } from "./lib/progress.js";
@@ -111,36 +111,18 @@ export default function App() {
   function finishModule() {
     if (mi < MODULES.length - 1) {
       openModule(mi + 1); // el siguiente módulo empieza por su lección
-      toast("¡Módulo completado! Sigue con la lección " + (mi + 2));
+      toast("¡Módulo terminado! Sigue con la lección " + (mi + 2));
     } else {
       setScreen("results");
     }
   }
 
-  function goFix() {
-    for (let i = 0; i < MODULES.length; i++) {
-      const m = MODULES[i];
-      const has = m.questions.some((q) => !answerInfo(answers[q.id]).solved);
-      if (has) {
-        setMi(i);
-        setTab("quiz");
-        setScreen("module");
-        return;
-      }
-    }
-    setMi(0);
+  // Lleva a la primera pregunta sin responder. La evaluación tiene un solo intento: no hay "reiniciar".
+  function continueExam() {
+    const i = MODULES.findIndex((m) => m.questions.some((q) => !answerInfo(answers[q.id]).answered));
+    setMi(i >= 0 ? i : 0);
     setTab("quiz");
     setScreen("module");
-  }
-
-  function reset() {
-    clearState();
-    setAnswers({});
-    setHints({});
-    setQpos({});
-    setSeed(Math.floor(Math.random() * 1e9) + 1);
-    setScreen("home");
-    toast("Progreso reiniciado");
   }
 
   if (!ready) return null;
@@ -172,7 +154,7 @@ export default function App() {
             <div className="steps">
               {MODULES.map((m, i) => {
                 const st = moduleStats(m, answers);
-                const done = st.solved === st.total;
+                const done = st.answered === st.total;
                 const active = screen === "module" && mi === i;
                 return (
                   <button
@@ -201,7 +183,7 @@ export default function App() {
       <main>
         {screen === "gate" && <NameGate onSubmit={submitName} initialName={name} initialGroup={group} />}
         {screen === "home" && (
-          <Home studentName={name} group={group} answers={answers} onOpenModule={openModule} />
+          <Home studentName={name} group={group} answers={answers} onOpenModule={openModule} onResults={() => setScreen("results")} />
         )}
         {screen === "module" && (
           <ModuleView
@@ -228,8 +210,7 @@ export default function App() {
             answers={answers}
             hints={hints}
             onHome={() => setScreen("home")}
-            onFix={goFix}
-            onReset={reset}
+            onContinue={continueExam}
             toast={toast}
           />
         )}

@@ -1,7 +1,7 @@
 // Valida el contenido del curso: protege contra errores al editar modules.js
 // (una pregunta sin respuesta correcta, opciones repetidas, enlaces a secciones que no existen…).
 import { describe, it, expect } from "vitest";
-import { MODULES, PASS, COURSE, totalQuestions } from "../../src/data/modules.js";
+import { MODULES, PASS_CORRECT, COURSE, totalQuestions } from "../../src/data/modules.js";
 import { DEMOS } from "../../src/components/Demos.jsx";
 
 const questions = MODULES.flatMap((m) => m.questions.map((q) => ({ m, q })));
@@ -9,8 +9,9 @@ const questions = MODULES.flatMap((m) => m.questions.map((q) => ({ m, q })));
 describe("curso", () => {
   it("datos generales coherentes", () => {
     expect(COURSE.name).toContain("Optativa de React");
-    expect(PASS).toBeGreaterThan(0);
-    expect(PASS).toBeLessThanOrEqual(100);
+    expect(PASS_CORRECT).toBe(12);
+    expect(PASS_CORRECT).toBeLessThanOrEqual(totalQuestions());
+    expect(totalQuestions()).toBe(20); // 20 preguntas → 5% cada una
     expect(totalQuestions()).toBe(questions.length);
   });
 

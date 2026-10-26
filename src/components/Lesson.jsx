@@ -53,7 +53,7 @@ export default function Lesson({ module, focus, onHome, onQuiz }) {
           &larr; Módulos
         </button>
         <button className="btn" onClick={onQuiz}>
-          {focusTitle ? "Volver a la pregunta" : "Ir a la práctica"} &rarr;
+          {focusTitle ? "Volver a la pregunta" : "Ir a la evaluación"} &rarr;
         </button>
       </div>
     </div>

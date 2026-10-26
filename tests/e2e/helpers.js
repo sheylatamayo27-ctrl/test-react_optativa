@@ -26,33 +26,42 @@ export async function currentQuestion(page) {
   return q;
 }
 
-// Pulsa la opción correcta (o una incorrecta) de la pregunta actual. El orden de las opciones es aleatorio.
+// Índice en pantalla de una opción (el orden de las opciones es aleatorio).
+export async function optionIndex(page, option) {
+  const texts = (await page.locator(".opt .otext").allTextContents()).map(norm);
+  const idx = texts.indexOf(optionText(option));
+  if (idx < 0) throw new Error("Opción no encontrada: " + optionText(option));
+  return idx;
+}
+
+// Marca la opción correcta (o una incorrecta) de la pregunta actual y confirma la respuesta.
 export async function answerCurrent(page, correct = true) {
   const q = await currentQuestion(page);
   const target = q.options.find((o) => !!o.correct === correct);
-  const texts = (await page.locator(".opt .otext").allTextContents()).map(norm);
-  const idx = texts.indexOf(optionText(target));
-  if (idx < 0) throw new Error(`Opción no encontrada en ${q.id}: ${optionText(target)}`);
-  await page.locator(".opt").nth(idx).click();
+  await page.locator(".opt").nth(await optionIndex(page, target)).click();
+  await page.getByRole("button", { name: "Confirmar respuesta" }).click();
   return { q, option: target };
 }
 
-// Resuelve todas las preguntas del módulo abierto (pestaña Práctica).
-export async function solveOpenModule(page) {
-  await page.locator(".tab", { hasText: "Práctica" }).click();
+// Responde todas las preguntas del módulo abierto. `plan` dice, pregunta a pregunta, si acertar (por defecto, todas bien).
+export async function solveOpenModule(page, plan = [true, true, true, true, true]) {
+  await page.locator(".tab", { hasText: "Evaluación" }).click();
   const total = await page.locator(".seg-q").count();
   for (let i = 0; i < total; i++) {
-    await answerCurrent(page, true);
-    await expect(page.locator(".fb.good")).toBeVisible();
+    await answerCurrent(page, plan[i] !== false);
+    await expect(page.locator(".fb")).toBeVisible();
     if (i < total - 1) await page.locator(".q-nav .btn", { hasText: "Siguiente" }).click();
   }
   await expect(page.locator(".done-card")).toBeVisible();
 }
 
-// Progreso con todas las respuestas correctas, para probar resultados y certificado.
-export function allSolvedAnswers() {
+// Evaluación terminada con `nCorrect` respuestas correctas (y el resto incorrectas).
+export function finishedAnswers(nCorrect = QUESTIONS.length) {
   const answers = {};
-  for (const q of QUESTIONS) answers[q.id] = { optId: q.options.find((o) => o.correct).id, solved: true, tries: 1, wrong: [] };
+  QUESTIONS.forEach((q, i) => {
+    const ok = i < nCorrect;
+    answers[q.id] = { optId: q.options.find((o) => !!o.correct === ok).id, correct: ok };
+  });
   return answers;
 }
 

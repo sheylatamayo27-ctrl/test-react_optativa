@@ -68,15 +68,7 @@ export function slug(s) {
   );
 }
 
-// Estadísticas de una respuesta guardada: { optId, solved, tries, wrong }
+// Estado de una respuesta guardada: { optId, correct }. Cada pregunta tiene un único intento.
 export function answerInfo(a) {
-  if (!a) return { tried: false, solved: false, tries: 0, firstTry: false, wrong: [] };
-  const tries = a.tries || 1; // respuestas guardadas por versiones anteriores no tenían "tries"
-  return {
-    tried: true,
-    solved: !!a.solved,
-    tries,
-    firstTry: !!a.solved && tries === 1,
-    wrong: a.wrong || [],
-  };
+  return { answered: !!a, correct: !!(a && a.correct) };
 }

@@ -55,9 +55,10 @@ describe("shuffle", () => {
 
 describe("answerInfo", () => {
   it("sin respuesta", () => {
-    expect(answerInfo(undefined)).toMatchObject({ tried: false, solved: false, tries: 0, firstTry: false });
+    expect(answerInfo(undefined)).toEqual({ answered: false, correct: false });
   });
-  it("progreso antiguo sin 'tries' cuenta como 1 intento", () => {
-    expect(answerInfo({ optId: "a", solved: true })).toMatchObject({ tries: 1, firstTry: true });
+  it("respondida correcta e incorrecta", () => {
+    expect(answerInfo({ optId: "a", correct: true })).toEqual({ answered: true, correct: true });
+    expect(answerInfo({ optId: "b", correct: false })).toEqual({ answered: true, correct: false });
   });
 });

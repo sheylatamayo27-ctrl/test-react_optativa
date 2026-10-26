@@ -18,7 +18,7 @@ export default function ModuleView({
   // Si hay una guardada (apagón, recarga…), se retoma; si no, la primera sin resolver.
   const [qIdx, setQIdx] = useState(() => {
     if (initialQ != null) return initialQ;
-    const f = order.findIndex((q) => !answerInfo(answers[q.id]).solved);
+    const f = order.findIndex((q) => !answerInfo(answers[q.id]).answered);
     return f >= 0 ? f : 0;
   });
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function ModuleView({
             📘 Lección
           </button>
           <button className={"tab" + (tab === "quiz" ? " active" : "")} onClick={goQuiz}>
-            ✍ Práctica <span className="mini">{stats.solved}/{stats.total}</span>
+            ✍ Evaluación <span className="mini">{stats.answered}/{stats.total}</span>
           </button>
         </div>
       </section>
@@ -79,13 +79,11 @@ export default function ModuleView({
 }
 
 export function moduleStats(module, answers) {
-  let solved = 0, firstTry = 0, tried = 0, tries = 0;
+  let answered = 0, correct = 0;
   module.questions.forEach((q) => {
     const a = answerInfo(answers[q.id]);
-    if (a.tried) tried++;
-    if (a.solved) solved++;
-    if (a.firstTry) firstTry++;
-    tries += a.tries;
+    if (a.answered) answered++;
+    if (a.correct) correct++;
   });
-  return { solved, firstTry, tried, tries, total: module.questions.length };
+  return { answered, correct, total: module.questions.length };
 }

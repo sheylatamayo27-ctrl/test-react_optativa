@@ -22,7 +22,9 @@
 //   hint     pista
 //   example  { title?, code, note? }  ejemplo aplicado que se muestra al acertar
 
-export const PASS = 60; // nota mínima para aprobar y descargar el certificado
+// Calificación: cada pregunta tiene UN solo intento y todas valen lo mismo (20 preguntas → 5% cada una).
+// Para aprobar y descargar el certificado hacen falta PASS_CORRECT respuestas correctas (12 de 20 = 60%).
+export const PASS_CORRECT = 12;
 
 // Datos de la asignatura: se muestran en el inicio, en el registro y en el certificado.
 export const COURSE = {

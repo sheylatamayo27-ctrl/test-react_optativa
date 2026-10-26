@@ -12,22 +12,22 @@ async function powerCut(page, context) {
 test("tras un apagón en mitad de la práctica vuelve a la misma pregunta con sus respuestas", async ({ page, context }) => {
   await register(page);
   await page.locator(".dot", { hasText: "2" }).click();
-  await page.locator(".tab", { hasText: "Práctica" }).click();
+  await page.locator(".tab", { hasText: "Evaluación" }).click();
 
   await answerCurrent(page, true);
   await page.locator(".q-nav .btn", { hasText: "Siguiente" }).click();
-  await answerCurrent(page, false); // un fallo también debe conservarse
+  await answerCurrent(page, false); // un fallo también se conserva (y no se puede cambiar)
   await page.locator(".q-nav .btn", { hasText: "Siguiente" }).click();
   const where = await currentQuestion(page);
 
   page = await powerCut(page, context);
 
   await expect(page.locator(".m-head h1")).toHaveText("Estado con useState");
-  await expect(page.locator(".tab.active")).toContainText("Práctica");
+  await expect(page.locator(".tab.active")).toContainText("Evaluación");
   expect((await currentQuestion(page)).id).toBe(where.id);
-  await expect(page.locator(".toast")).toHaveText("Continuamos donde lo dejaste: Módulo 2 · Práctica · Pregunta 3");
-  await expect(page.locator(".seg-q.first")).toHaveCount(1);
-  await expect(page.locator(".seg-q.tried")).toHaveCount(1);
+  await expect(page.locator(".toast")).toHaveText("Continuamos donde lo dejaste: Módulo 2 · Evaluación · Pregunta 3");
+  await expect(page.locator(".seg-q.ok")).toHaveCount(1);
+  await expect(page.locator(".seg-q.bad")).toHaveCount(1);
 });
 
 test("si estaba leyendo una lección, vuelve a esa lección", async ({ page, context }) => {
@@ -45,7 +45,7 @@ test("si estaba leyendo una lección, vuelve a esa lección", async ({ page, con
 test("recuerda la pregunta de cada módulo por separado", async ({ page, context }) => {
   await register(page);
   await page.locator(".dot", { hasText: "1" }).click();
-  await page.locator(".tab", { hasText: "Práctica" }).click();
+  await page.locator(".tab", { hasText: "Evaluación" }).click();
   await answerCurrent(page, true);
   await page.locator(".q-nav .btn", { hasText: "Siguiente" }).click();
   const m1 = await currentQuestion(page);
@@ -53,7 +53,7 @@ test("recuerda la pregunta de cada módulo por separado", async ({ page, context
   await page.locator(".dot", { hasText: "4" }).click();
   page = await powerCut(page, context);
   await page.locator(".dot", { hasText: "1" }).click();
-  await page.locator(".tab", { hasText: "Práctica" }).click();
+  await page.locator(".tab", { hasText: "Evaluación" }).click();
   expect((await currentQuestion(page)).id).toBe(m1.id);
 });
 

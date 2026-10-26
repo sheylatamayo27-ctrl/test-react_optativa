@@ -25,7 +25,7 @@ test("un alumno con progreso antiguo (sin grupo) completa sus datos sin perder r
     localStorage.setItem("react-lab-v2", JSON.stringify({
       name: "Luis Pérez Ramos",
       seed: 42,
-      answers: { m1q1: { optId: "a", solved: true } },
+      answers: { m1q1: { optId: "a", correct: true } },
       hints: {},
     }))
   );
@@ -37,7 +37,7 @@ test("un alumno con progreso antiguo (sin grupo) completa sus datos sin perder r
 
   await page.fill("#grupo", "2DAW");
   await page.click("button[type=submit]");
-  await expect(page.locator(".hero-cta")).toContainText("1/20 resueltas");
+  await expect(page.locator(".hero-cta")).toContainText("1/20 respondidas");
 
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("react-lab-v2")));
   expect(saved.group).toBe("2DAW");

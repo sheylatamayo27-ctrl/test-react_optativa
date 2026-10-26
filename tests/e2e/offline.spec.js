@@ -78,6 +78,7 @@ test("sin internet ni servidor: abre al recargar, se completa entero y descarga 
 
   await page.locator(".dot", { hasText: "★" }).click();
   await expect(page.locator(".res-stats .stat").first()).toContainText("20/20");
+  await expect(page.locator(".score-ring")).toContainText("100%");
   await expect(page.locator(".badge.ok")).toContainText("Aprobado");
   const [download] = await Promise.all([
     page.waitForEvent("download"),

@@ -4,35 +4,32 @@ import { moduleStats } from "./ModuleView.jsx";
 import Question from "./Question.jsx";
 
 function segClass(a) {
-  if (a.firstTry) return " first";
-  if (a.solved) return " solved";
-  if (a.tried) return " tried";
-  return "";
+  if (!a.answered) return "";
+  return a.correct ? " ok" : " bad";
 }
 
 function ModuleDone({ module, answers, hints, isLast, onFinish }) {
   const st = moduleStats(module, answers);
   const used = module.questions.filter((q) => hints[q.id]).length;
-  const rate = Math.round((st.firstTry / st.total) * 100);
   const msg =
-    rate === 100
-      ? "¡Perfecto! Todas al primer intento. Dominas este tema."
-      : rate >= 70
-      ? "¡Muy bien! Tienes una base sólida; revisa las que te costaron para afianzarlas."
-      : rate >= 40
-      ? "Buen trabajo terminando el módulo. Te recomendamos repasar la lección antes de seguir."
-      : "Lo lograste, pero este tema aún cuesta. Repasa la lección y las demos: te ayudarán a fijar los conceptos.";
+    st.correct === st.total
+      ? "¡Perfecto! Todas correctas. Dominas este tema."
+      : st.correct >= 4
+      ? "¡Muy bien! Tienes una base sólida. Revisa la explicación de la que fallaste."
+      : st.correct >= 3
+      ? "Bien. Repasa las explicaciones de las que fallaste para afianzar el tema."
+      : "Este tema aún cuesta. Lee las explicaciones de tus errores y repasa la lección: te servirá para lo que viene.";
   return (
     <div className="card done-card">
-      <div className="done-h">🎉 ¡Módulo {module.num} completado!</div>
+      <div className="done-h">🎉 ¡Módulo {module.num} terminado!</div>
       <p className="muted">{msg}</p>
       <div className="done-stats">
-        <div><b>{st.firstTry}/{st.total}</b><span>al primer intento</span></div>
-        <div><b>{st.tries}</b><span>intentos en total</span></div>
+        <div><b>{st.correct}/{st.total}</b><span>correctas</span></div>
+        <div><b>{st.correct * 5}%</b><span>aporta a tu nota</span></div>
         <div><b>{used}</b><span>pistas usadas</span></div>
       </div>
       <button className="btn" onClick={onFinish}>
-        {isLast ? "Ver mis resultados ✓" : "Continuar con el módulo " + (module.num + 1) + " →"}
+        {isLast ? "Ver mi resultado final ✓" : "Continuar con el módulo " + (module.num + 1) + " →"}
       </button>
     </div>
   );
@@ -44,15 +41,13 @@ export default function Quiz({
   const i = Math.min(idx, order.length - 1);
   const q = order[i];
 
-  const solvedCount = order.filter((qq) => answerInfo(answers[qq.id]).solved).length;
-  const tried = !!answers[q.id];
-  const allSolved = solvedCount === order.length;
-  // Se puede saltar a cualquier pregunta ya intentada o a la primera sin intentar.
-  const firstUntried = order.findIndex((qq) => !answers[qq.id]);
-  const reach = firstUntried === -1 ? order.length - 1 : firstUntried;
-
-  const canNext = i < order.length - 1 && tried;
-  const pendingOther = order.findIndex((qq, j) => j !== i && !answerInfo(answers[qq.id]).solved);
+  const answeredCount = order.filter((qq) => answers[qq.id]).length;
+  const answered = !!answers[q.id];
+  const allAnswered = answeredCount === order.length;
+  // Se puede volver a cualquier pregunta ya respondida (solo para revisarla) o ir a la primera sin responder.
+  const firstPending = order.findIndex((qq) => !answers[qq.id]);
+  const reach = firstPending === -1 ? order.length - 1 : firstPending;
+  const canNext = i < order.length - 1 && answered;
 
   // Navegación con flechas del teclado
   useEffect(() => {
@@ -69,6 +64,13 @@ export default function Quiz({
 
   return (
     <div className="wrap quiz">
+      {answeredCount === 0 && (
+        <div className="exam-note">
+          <b>⚠ Un solo intento por pregunta.</b> Al confirmar, tu respuesta queda registrada y verás la correcta con su
+          explicación. Si tienes dudas, repasa la lección antes de empezar.
+        </div>
+      )}
+
       <div className="q-progress">
         <span className="lbl">
           Pregunta {i + 1} de {order.length}
@@ -87,7 +89,7 @@ export default function Quiz({
           ))}
         </div>
         <span className="lbl">
-          {solvedCount}/{order.length} ✓
+          {answeredCount}/{order.length} respondidas
         </span>
       </div>
 
@@ -106,24 +108,14 @@ export default function Quiz({
         <button className="btn ghost" disabled={i === 0} onClick={() => setIdx(i - 1)}>
           &larr; Anterior
         </button>
-        {i < order.length - 1 ? (
-          <button className="btn" disabled={!tried} onClick={() => setIdx(i + 1)} title={!tried ? "Responde para continuar" : undefined}>
+        {i < order.length - 1 && (
+          <button className="btn" disabled={!answered} onClick={() => setIdx(i + 1)} title={!answered ? "Responde para continuar" : undefined}>
             Siguiente &rarr;
           </button>
-        ) : !allSolved ? (
-          <button className="btn" disabled={!tried || pendingOther < 0} onClick={() => setIdx(pendingOther)}>
-            Ir a la pendiente &rarr;
-          </button>
-        ) : null}
+        )}
       </div>
 
-      {!allSolved && i === order.length - 1 && tried && (
-        <p className="q-legend faint">
-          Para cerrar el módulo debes acertar todas las preguntas. Las pendientes aparecen en rojo en la barra superior.
-        </p>
-      )}
-
-      {allSolved && (
+      {allAnswered && (
         <ModuleDone module={module} answers={answers} hints={hints} isLast={isLast} onFinish={onFinish} />
       )}
     </div>

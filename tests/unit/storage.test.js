@@ -25,7 +25,7 @@ describe("storage: autoguardado del progreso", () => {
     name: "María González",
     group: "3°A",
     seed: 123,
-    answers: { m1q1: { optId: "a", solved: true, tries: 1, wrong: [] } },
+    answers: { m1q1: { optId: "a", correct: true } },
     hints: { m1q2: true },
     qpos: { m1: 3 },
     pos: { screen: "module", mi: 0, tab: "quiz" },

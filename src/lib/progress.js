@@ -1,13 +1,34 @@
 // Lógica de progreso sin dependencias de React, para poder probarla de forma aislada.
 import { answerInfo } from "./util.js";
 
-// Registra un intento. Una pregunta ya resuelta no vuelve a contar.
+// Registra la respuesta. Un único intento: si la pregunta ya está respondida, no cambia.
 export function applyAnswer(answers, qid, optId, correct) {
-  const prev = answers[qid];
-  if (prev && prev.solved) return answers;
-  const info = answerInfo(prev);
-  const wrong = correct || info.wrong.includes(optId) ? info.wrong : [...info.wrong, optId];
-  return { ...answers, [qid]: { optId, solved: !!correct, tries: info.tries + 1, wrong } };
+  if (answers[qid]) return answers;
+  return { ...answers, [qid]: { optId, correct: !!correct } };
+}
+
+// Calificación del test: cada pregunta vale lo mismo (20 preguntas → 5% cada una).
+// Se aprueba con `passCorrect` respuestas correctas, una vez respondidas todas.
+export function grade(answers, modules, passCorrect) {
+  let correct = 0, answered = 0, total = 0;
+  for (const m of modules)
+    for (const q of m.questions) {
+      total++;
+      const a = answerInfo(answers[q.id]);
+      if (a.answered) answered++;
+      if (a.correct) correct++;
+    }
+  const complete = total > 0 && answered === total;
+  return {
+    correct,
+    wrong: answered - correct,
+    answered,
+    total,
+    pct: total ? Math.round((correct / total) * 100) : 0,
+    need: passCorrect,
+    complete,
+    passed: complete && correct >= passCorrect,
+  };
 }
 
 const SCREENS = ["home", "module", "results"];
@@ -31,6 +52,6 @@ export function validQuestion(idx, total) {
 export function resumeMessage({ screen, mi, tab }, qIdx) {
   if (screen === "results") return "Continuamos donde lo dejaste: Resultados";
   if (screen !== "module") return "";
-  const where = tab === "quiz" && qIdx != null ? `Práctica · Pregunta ${qIdx + 1}` : "Lección";
+  const where = tab === "quiz" && qIdx != null ? `Evaluación · Pregunta ${qIdx + 1}` : "Lección";
   return `Continuamos donde lo dejaste: Módulo ${mi + 1} · ${where}`;
 }
