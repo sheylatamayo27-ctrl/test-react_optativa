@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Lab — Curso de React</title>
+    <meta name="description" content="Plataforma de aprendizaje y evaluación de React con certificado." />
+    <meta name="theme-color" content="#3d5af1" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <script>
+      // Aplica el tema guardado antes de pintar, para evitar un parpadeo de colores.
+      try {
+        var p = JSON.parse(localStorage.getItem("react-lab-prefs") || "{}");
+        if (p.theme === "light" || p.theme === "dark") document.documentElement.setAttribute("data-theme", p.theme);
+        if (p.size) document.documentElement.setAttribute("data-size", p.size);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
