@@ -20,7 +20,7 @@ export default function NameGate({ onSubmit, initialName = "", initialGroup = ""
       return;
     }
     if (g.length < 1) {
-      setErr("Indica el número de tu grupo para continuar, por ejemplo 301 (aparecerá en tu certificado).");
+      setErr("Indica el número de tu grupo.");
       return;
     }
     onSubmit(n + " " + a, g);
@@ -29,19 +29,9 @@ export default function NameGate({ onSubmit, initialName = "", initialGroup = ""
   return (
     <div className="wrap gate">
       <form className="card gate-card" onSubmit={submit}>
-        <div className="glyph-lg">⚛</div>
         <span className="course-tag">🎓 {COURSE.name}</span>
         <h1>{returning ? "Completa tus datos" : "Bienvenido a React Lab"}</h1>
-        <p>
-          {returning ? (
-            <>Tu progreso sigue guardado. Solo falta indicar tu <b>grupo</b> para que aparezca en tu certificado.</>
-          ) : (
-            <>
-              Esta es la evaluación de la <b>{COURSE.name}</b> que estás cursando. Al aprobar recibirás tu
-              <b> certificado en PDF</b>. Tu progreso se guarda en este equipo: puedes cerrar y continuar después.
-            </>
-          )}
-        </p>
+        {returning && <p>Tu progreso sigue guardado. Solo falta tu grupo.</p>}
         <div className="fld">
           <label htmlFor="nombre">Nombre</label>
           <input

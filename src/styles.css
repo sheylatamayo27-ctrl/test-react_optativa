@@ -137,7 +137,6 @@ pre.code.mini{font-size:.8rem;padding:10px 12px}
 /* gate */
 .gate{min-height:calc(100% - 58px);display:grid;place-items:center;padding-top:48px;padding-bottom:48px}
 .gate-card{width:min(460px,100%);padding:32px 28px;text-align:center}
-.gate .glyph-lg{width:54px;height:54px;border-radius:15px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:1.6rem;font-weight:800;margin:0 auto 16px}
 .gate h1{font-size:1.7rem;letter-spacing:-.02em}
 .gate p{color:var(--muted);margin-top:8px}
 .fld{margin-top:18px;text-align:left}
