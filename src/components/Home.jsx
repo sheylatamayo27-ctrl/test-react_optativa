@@ -39,22 +39,6 @@ export default function Home({ exam, studentName, group, answers, attempt, best,
             <span>Aprobado con {PASS_CORRECT} correctas</span>
           </div>
         </div>
-        <div className="rules">
-          <b>📋 Cómo se califica</b>
-          <ul>
-            <li>Cada pregunta tiene <b>un solo intento</b>: al confirmar, tu respuesta queda registrada.</li>
-            <li>Cada respuesta correcta vale <b>{Math.round(100 / total)}%</b> de la nota.</li>
-            <li>
-              Apruebas con <b>{PASS_CORRECT} de {total}</b> correctas ({Math.round((PASS_CORRECT / total) * 100)}%) y
-              entonces podrás descargar tu certificado.
-            </li>
-            <li>Las pistas 💡 no restan puntos. Después de responder verás siempre la respuesta correcta y su explicación.</li>
-            <li>
-              Puedes <b>empezar de nuevo</b> cuando quieras: te saldrán <b>otras preguntas</b> sobre los mismos temas.
-              Tu certificado se queda con tu mejor aprobado.
-            </li>
-          </ul>
-        </div>
         {best && (
           <div className="best-card">
             <span>🎓</span>
@@ -72,7 +56,6 @@ export default function Home({ exam, studentName, group, answers, attempt, best,
               {answered > 0 ? "Continuar" : "Empezar"} &rarr;
             </button>
           )}
-          <span className="pill">◷ ~40–60 min</span>
           <span className="pill">Intento {attempt}</span>
           <span className="pill">✓ {answered}/{total} respondidas</span>
           {answered > 0 && (
