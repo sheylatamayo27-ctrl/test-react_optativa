@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { register, answerCurrent, currentQuestion, optionIndex, solveOpenModule, finishedAnswers } from "./helpers.js";
+import { register, answerCurrent, currentQuestion, currentExam, optionIndex, solveOpenModule, finishedAnswers } from "./helpers.js";
 
 test.beforeEach(async ({ page }) => {
   await register(page);
@@ -83,10 +83,11 @@ test("al terminar un módulo muestra las correctas y abre la lección del siguie
 });
 
 async function finishWith(page, nCorrect) {
+  const answers = finishedAnswers(await currentExam(page), nCorrect);
   await page.evaluate((answers) => {
     const s = JSON.parse(localStorage.getItem("react-lab-v2"));
     localStorage.setItem("react-lab-v2", JSON.stringify({ ...s, name: "Ana Torres", group: "402", answers }));
-  }, finishedAnswers(nCorrect));
+  }, answers);
   await page.reload();
   await page.locator(".dot", { hasText: "★" }).click();
 }
@@ -117,7 +118,44 @@ test("con 11 de 20 correctas no aprueba: sin certificado ni forma de corregir", 
   await expect(page.locator(".no-cert")).toContainText("12 de 20");
   await expect(page.locator(".mistake")).toHaveCount(9);
   await expect(page.getByRole("button", { name: /Descargar certificado/ })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /Corregir|Reiniciar|Reintentar/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Corregir/ })).toHaveCount(0);
+});
+
+test("empezar de nuevo: otras preguntas, respuestas en blanco y se conserva el certificado", async ({ page }) => {
+  await finishWith(page, 12); // intento 1 aprobado con 60%
+  await expect(page.locator(".badge")).toHaveText("✓ Aprobado");
+  const intento1 = (await currentExam(page)).flatMap((m) => m.questions.map((q) => q.id));
+
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: /Empezar de nuevo/ }).click();
+
+  // Intento 2: preguntas en blanco y otra combinación de versiones
+  await expect(page.locator(".hero-cta")).toContainText("Intento 2");
+  await expect(page.locator(".hero-cta")).toContainText("0/20 respondidas");
+  await expect(page.locator(".best-card")).toContainText("Ya aprobaste con 60%");
+  const intento2 = (await currentExam(page)).flatMap((m) => m.questions.map((q) => q.id));
+  expect(intento2).not.toEqual(intento1);
+
+  // Si el intento 2 sale peor, conserva el certificado del intento 1
+  await finishWith(page, 5);
+  await expect(page.locator(".res-head .eyebrow")).toHaveText("Intento 2 · completado");
+  await expect(page.locator(".badge")).toHaveText("✕ No aprobado");
+  await expect(page.locator(".keep-cert")).toContainText("60%");
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: /Descargar certificado PDF/ }).click(),
+  ]);
+  const pdf = (await import("node:fs")).readFileSync(await download.path(), "latin1");
+  expect(pdf).toContain("60%");
+});
+
+test("si cancela el aviso de empezar de nuevo, no se pierde nada", async ({ page }) => {
+  await answerCurrent(page, true);
+  await page.locator(".brand").click();
+  page.once("dialog", (d) => d.dismiss());
+  await page.getByRole("button", { name: /Empezar de nuevo/ }).click();
+  await expect(page.locator(".hero-cta")).toContainText("Intento 1");
+  await expect(page.locator(".hero-cta")).toContainText("1/20 respondidas");
 });
 
 test("antes de terminar no se muestra la nota", async ({ page }) => {

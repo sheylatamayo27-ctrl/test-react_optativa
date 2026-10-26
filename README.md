@@ -14,7 +14,10 @@ un cuestionario y, al aprobar, descarguen un **certificado en PDF** con su nombr
   sección exacta** de la lección.
 - **Modo claro / oscuro / sistema** y tamaño de texto ajustable (icono de engranaje).
 - Atajos de teclado en la práctica: A–D o 1–4 para responder, ← → para navegar, H pista.
-- Preguntas en **orden aleatorio** (y opciones barajadas) distinto para cada alumno.
+- **Banco de 60 preguntas**: cada una de las 20 preguntas del test tiene **3 versiones** sobre el
+  mismo concepto. Cada intento sortea una versión de cada una, con orden y opciones barajados.
+- **Empezar de nuevo** cuando el alumno quiera: salen otras preguntas y el certificado conserva
+  el **mejor aprobado**.
 - Un **ejercicio práctico** por módulo. Por ejemplo: se muestra un hook que trae Pokémon y la documentación
   de una API de usuarios; el alumno debe elegir cómo **modificar el hook** para traer usuarios.
 - **Evaluación con nota real**: cada pregunta tiene **un solo intento** (se elige y se confirma).
@@ -86,7 +89,9 @@ src/
   main.jsx              punto de entrada
   App.jsx               estado general y navegación
   styles.css            estilos (temas claro y oscuro)
-  data/modules.js       lecciones + preguntas (edítalo para cambiar el contenido)
+  data/modules.js       lecciones + preguntas originales (edítalo para cambiar el contenido)
+  data/variantes.js     versiones alternativas de cada pregunta (campo `slot` = pregunta original)
+  data/exam.js          banco completo y sorteo de las preguntas de cada intento
   lib/
     certificate.js      generación del certificado PDF (jsPDF)
     storage.js          autoguardado en localStorage

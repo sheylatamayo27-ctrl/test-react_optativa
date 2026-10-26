@@ -1,13 +1,14 @@
-import { MODULES, totalQuestions, PASS_CORRECT, COURSE } from "../data/modules.js";
+import { PASS_CORRECT, COURSE } from "../data/modules.js";
+import { examTotal } from "../data/exam.js";
 import { moduleStats } from "./ModuleView.jsx";
 
-export default function Home({ studentName, group, answers, onOpenModule, onResults }) {
-  const total = totalQuestions();
+export default function Home({ exam, studentName, group, answers, attempt, best, onOpenModule, onResults, onRestart }) {
+  const total = examTotal(exam);
   let answered = 0;
-  MODULES.forEach((m) => (answered += moduleStats(m, answers).answered));
+  exam.forEach((m) => (answered += moduleStats(m, answers).answered));
   const finished = answered === total;
   // "Continuar" lleva al primer módulo que aún tiene preguntas sin responder
-  const next = MODULES.findIndex((m) => {
+  const next = exam.findIndex((m) => {
     const st = moduleStats(m, answers);
     return st.answered < st.total;
   });
@@ -33,7 +34,7 @@ export default function Home({ studentName, group, answers, onOpenModule, onResu
             </span>
           </div>
           <div className="course-meta">
-            <span>{MODULES.length} módulos</span>
+            <span>{exam.length} módulos</span>
             <span>{total} preguntas</span>
             <span>Aprobado con {PASS_CORRECT} correctas</span>
           </div>
@@ -48,8 +49,21 @@ export default function Home({ studentName, group, answers, onOpenModule, onResu
               entonces podrás descargar tu certificado.
             </li>
             <li>Las pistas 💡 no restan puntos. Después de responder verás siempre la respuesta correcta y su explicación.</li>
+            <li>
+              Puedes <b>empezar de nuevo</b> cuando quieras: te saldrán <b>otras preguntas</b> sobre los mismos temas.
+              Tu certificado se queda con tu mejor aprobado.
+            </li>
           </ul>
         </div>
+        {best && (
+          <div className="best-card">
+            <span>🎓</span>
+            <div>
+              <b>Ya aprobaste con {best.pct}%</b> (intento {best.attempt}). Tu certificado está disponible.
+            </div>
+            <button className="btn sm" onClick={onResults}>Ver certificado</button>
+          </div>
+        )}
         <div className="hero-cta">
           {finished ? (
             <button className="btn" onClick={onResults}>Ver mi resultado &rarr;</button>
@@ -59,7 +73,11 @@ export default function Home({ studentName, group, answers, onOpenModule, onResu
             </button>
           )}
           <span className="pill">◷ ~40–60 min</span>
+          <span className="pill">Intento {attempt}</span>
           <span className="pill">✓ {answered}/{total} respondidas</span>
+          {answered > 0 && (
+            <button className="btn ghost sm" onClick={onRestart}>↻ Empezar de nuevo</button>
+          )}
         </div>
       </section>
 
@@ -98,7 +116,7 @@ export default function Home({ studentName, group, answers, onOpenModule, onResu
 
       <section className="wrap">
         <div className="mod-grid">
-          {MODULES.map((m, i) => {
+          {exam.map((m, i) => {
             const st = moduleStats(m, answers);
             const done = st.answered === st.total;
             const pct = Math.round((st.answered / st.total) * 100);

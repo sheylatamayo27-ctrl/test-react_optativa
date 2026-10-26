@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MODULES, PASS_CORRECT, COURSE } from "../data/modules.js";
+import { PASS_CORRECT, COURSE } from "../data/modules.js";
 import { grade } from "../lib/progress.js";
 import { moduleStats } from "./ModuleView.jsx";
 import { Code, Md } from "./Bits.jsx";
@@ -22,64 +22,102 @@ function Ring({ pct, passed }) {
   );
 }
 
-export default function Results({ studentName, group, answers, hints, onHome, onContinue, toast }) {
-  const g = grade(answers, MODULES, PASS_CORRECT);
-  const hintCount = Object.keys(hints || {}).length;
+// Certificado del mejor intento aprobado (se conserva aunque el alumno empiece de nuevo).
+function Certificate({ studentName, group, cert, toast }) {
   const [code] = useState(() => certCode(studentName));
-
-  // Aún no ha terminado: no hay nota hasta responder las 20
-  if (!g.complete)
-    return (
-      <section className="wrap res-head">
-        <span className="eyebrow">Evaluación en curso</span>
-        <h1>Aún no has terminado</h1>
-        <p className="verdict">
-          Has respondido <b>{g.answered} de {g.total}</b> preguntas. Tu nota aparecerá cuando respondas todas.
-        </p>
-        <div className="res-mods">
-          {MODULES.map((m) => {
-            const st = moduleStats(m, answers);
-            return (
-              <div className="card res-mod" key={m.id}>
-                <div className="n">MÓDULO 0{m.num}</div>
-                <h4>{m.title}</h4>
-                <div className="sc">
-                  {st.answered}
-                  <span style={{ fontSize: ".9rem", color: "var(--muted)" }}>/{st.total} respondidas</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="res-foot">
-          <button className="btn" onClick={onContinue}>Continuar la evaluación &rarr;</button>
-        </div>
-      </section>
-    );
-
-  const failed = [];
-  MODULES.forEach((m) =>
-    m.questions.forEach((q) => {
-      const a = answers[q.id];
-      if (a && !a.correct) failed.push({ m, q, chosen: q.options.find((o) => o.id === a.optId) });
-    })
-  );
+  const fecha = new Date(cert.date).toLocaleDateString("es", { day: "numeric", month: "long", year: "numeric" });
 
   function descargar() {
     try {
-      generarCertificado({ nombre: studentName, grupo: group, curso: COURSE.name, puntaje: g.pct });
+      generarCertificado({ nombre: studentName, grupo: group, curso: COURSE.name, puntaje: cert.pct, aprobadoEl: cert.date });
       toast && toast("Certificado PDF descargado");
     } catch (e) {
       toast && toast("No se pudo generar el PDF");
     }
   }
 
-  const fecha = new Date().toLocaleDateString("es", { day: "numeric", month: "long", year: "numeric" });
+  return (
+    <section className="wrap">
+      <div className="cert-wrap">
+        <div className="cert-preview" aria-label="Vista previa del certificado">
+          <div className="cert-inner">
+            <div className="cert-eyebrow">React Lab · {COURSE.name}</div>
+            <div className="cert-title">Certificado de Aprobación</div>
+            <div className="cert-sub">Se otorga el presente certificado a</div>
+            <div className="cert-name">{studentName}</div>
+            <div className="cert-line" />
+            {group && <div className="cert-group">Grupo {group}</div>}
+            <div className="cert-felic">¡Felicidades, has aprobado el cuestionario!</div>
+            <div className="cert-seal">APROBADO<br />React Lab</div>
+            <div className="cert-meta">
+              <span>Calificación: {cert.pct}%</span>
+              <span>Fecha: {fecha}</span>
+              <span>Código: {code}</span>
+            </div>
+          </div>
+        </div>
+        <div className="cert-actions">
+          <button className="btn big" onClick={descargar}>⬇ Descargar certificado PDF</button>
+        </div>
+        <p className="muted" style={{ fontSize: ".85rem", textAlign: "center", maxWidth: "60ch" }}>
+          Certificado de tu mejor aprobado ({cert.pct}%, intento {cert.attempt}), con tu nombre, tu grupo y un código de verificación.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export default function Results({ exam, attempt, best, onRestart, studentName, group, answers, hints, onHome, onContinue, toast }) {
+  const g = grade(answers, exam, PASS_CORRECT);
+  const hintCount = Object.keys(hints || {}).length;
+  // Mejor aprobado guardado; si este intento acaba de aprobar, se muestra ya (App lo guarda enseguida)
+  const cert = best || (g.passed ? { pct: g.pct, date: new Date().toISOString(), attempt } : null);
+
+  // Aún no ha terminado: no hay nota hasta responder las 20
+  if (!g.complete)
+    return (
+      <>
+        <section className="wrap res-head">
+          <span className="eyebrow">Intento {attempt} · en curso</span>
+          <h1>Aún no has terminado</h1>
+          <p className="verdict">
+            Has respondido <b>{g.answered} de {g.total}</b> preguntas. Tu nota aparecerá cuando respondas todas.
+          </p>
+          <div className="res-mods">
+            {exam.map((m) => {
+              const st = moduleStats(m, answers);
+              return (
+                <div className="card res-mod" key={m.id}>
+                  <div className="n">MÓDULO 0{m.num}</div>
+                  <h4>{m.title}</h4>
+                  <div className="sc">
+                    {st.answered}
+                    <span style={{ fontSize: ".9rem", color: "var(--muted)" }}>/{st.total} respondidas</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="res-foot">
+            <button className="btn" onClick={onContinue}>Continuar la evaluación &rarr;</button>
+          </div>
+        </section>
+        {cert && <Certificate studentName={studentName} group={group} cert={cert} toast={toast} />}
+      </>
+    );
+
+  const failed = [];
+  exam.forEach((m) =>
+    m.questions.forEach((q) => {
+      const a = answers[q.id];
+      if (a && !a.correct) failed.push({ m, q, chosen: q.options.find((o) => o.id === a.optId) });
+    })
+  );
 
   return (
     <>
       <section className="wrap res-head">
-        <span className="eyebrow">Evaluación completada</span>
+        <span className="eyebrow">Intento {attempt} · completado</span>
         <h1>Tu resultado</h1>
         <Ring pct={g.pct} passed={g.passed} />
         <div style={{ margin: "2px 0 6px" }}>
@@ -89,8 +127,8 @@ export default function Results({ studentName, group, answers, hints, onHome, on
         </div>
         <p className="verdict">
           {g.passed
-            ? `¡Felicidades! Acertaste ${g.correct} de ${g.total} preguntas. Descarga tu certificado abajo.`
-            : `Acertaste ${g.correct} de ${g.total} preguntas. Para aprobar hacían falta ${g.need}. Revisa abajo las explicaciones de tus errores: te servirán para seguir aprendiendo.`}
+            ? `¡Felicidades! Acertaste ${g.correct} de ${g.total} preguntas.`
+            : `Acertaste ${g.correct} de ${g.total} preguntas. Para aprobar hacían falta ${g.need}. Revisa abajo las explicaciones de tus errores y vuelve a intentarlo: te saldrán otras preguntas.`}
         </p>
 
         <div className="res-stats">
@@ -113,7 +151,7 @@ export default function Results({ studentName, group, answers, hints, onHome, on
         </div>
 
         <div className="res-mods">
-          {MODULES.map((m) => {
+          {exam.map((m) => {
             const st = moduleStats(m, answers);
             const p = Math.round((st.correct / st.total) * 100);
             const col = p >= 80 ? "var(--ok)" : p >= 60 ? "var(--accent)" : "var(--warn)";
@@ -171,51 +209,38 @@ export default function Results({ studentName, group, answers, hints, onHome, on
         </section>
       )}
 
-      {g.passed && (
+      {!g.passed && cert && (
         <section className="wrap">
-          <div className="cert-wrap">
-            <div className="cert-preview" aria-label="Vista previa del certificado">
-              <div className="cert-inner">
-                <div className="cert-eyebrow">React Lab · {COURSE.name}</div>
-                <div className="cert-title">Certificado de Aprobación</div>
-                <div className="cert-sub">Se otorga el presente certificado a</div>
-                <div className="cert-name">{studentName}</div>
-                <div className="cert-line" />
-                {group && <div className="cert-group">Grupo {group}</div>}
-                <div className="cert-felic">¡Felicidades, has aprobado el cuestionario!</div>
-                <div className="cert-seal">APROBADO<br />React Lab</div>
-                <div className="cert-meta">
-                  <span>Calificación: {g.pct}%</span>
-                  <span>Fecha: {fecha}</span>
-                  <span>Código: {code}</span>
-                </div>
-              </div>
-            </div>
-            <div className="cert-actions">
-              <button className="btn big" onClick={descargar}>⬇ Descargar certificado PDF</button>
-            </div>
-            <p className="muted" style={{ fontSize: ".85rem", textAlign: "center", maxWidth: "60ch" }}>
-              El certificado se descarga como PDF con tu nombre, tu grupo, tu calificación y un código de verificación.
+          <div className="card review keep-cert">
+            <h3>🎓 Conservas tu certificado</h3>
+            <p>
+              Este intento no llegó a {g.need} correctas, pero ya habías aprobado con <b>{cert.pct}%</b> en el intento{" "}
+              {cert.attempt}. Tu certificado sigue disponible abajo.
             </p>
           </div>
         </section>
       )}
 
-      {!g.passed && (
+      {!g.passed && !cert && (
         <section className="wrap">
           <div className="card review no-cert">
             <h3>🔒 Sin certificado</h3>
             <p>
               El certificado se obtiene con al menos <b>{g.need} de {g.total}</b> respuestas correctas ({g.need * 5}%).
-              La evaluación tiene un solo intento, así que tu resultado queda registrado. Repasa las lecciones y las
-              explicaciones de arriba: es lo más útil para lo que viene en la optativa.
+              Repasa las lecciones y las explicaciones de arriba y vuelve a intentarlo: en el nuevo intento te saldrán
+              otras preguntas sobre los mismos temas.
             </p>
           </div>
         </section>
       )}
 
+      {cert && <Certificate studentName={studentName} group={group} cert={cert} toast={toast} />}
+
       <div className="wrap res-foot">
         <button className="btn ghost" onClick={onHome}>&larr; Volver al inicio</button>
+        <button className={"btn" + (g.passed ? " ghost" : "")} onClick={onRestart}>
+          ↻ Empezar de nuevo (otras preguntas)
+        </button>
       </div>
     </>
   );

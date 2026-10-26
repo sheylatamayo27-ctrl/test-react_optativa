@@ -3,8 +3,10 @@
 import { describe, it, expect } from "vitest";
 import { MODULES, PASS_CORRECT, COURSE, totalQuestions } from "../../src/data/modules.js";
 import { DEMOS } from "../../src/components/Demos.jsx";
+import { BANK, slotOf } from "../../src/data/exam.js";
 
-const questions = MODULES.flatMap((m) => m.questions.map((q) => ({ m, q })));
+// Todas las preguntas del banco: originales + versiones alternativas (60)
+const questions = BANK.flatMap((m) => m.questions.map((q) => ({ m, q })));
 
 describe("curso", () => {
   it("datos generales coherentes", () => {
@@ -12,7 +14,22 @@ describe("curso", () => {
     expect(PASS_CORRECT).toBe(12);
     expect(PASS_CORRECT).toBeLessThanOrEqual(totalQuestions());
     expect(totalQuestions()).toBe(20); // 20 preguntas → 5% cada una
-    expect(totalQuestions()).toBe(questions.length);
+    expect(questions.length).toBe(60); // 20 huecos × 3 versiones
+  });
+
+  it("cada hueco tiene exactamente 3 versiones, todas del mismo módulo", () => {
+    for (const m of BANK) {
+      const originals = MODULES.find((x) => x.id === m.id).questions.map((q) => q.id);
+      const bySlot = {};
+      for (const q of m.questions) (bySlot[slotOf(q)] ||= []).push(q.id);
+      expect(Object.keys(bySlot).sort(), m.id).toEqual([...originals].sort());
+      for (const [slot, ids] of Object.entries(bySlot)) expect(ids, slot).toHaveLength(3);
+    }
+  });
+
+  it("los enunciados no se repiten entre versiones", () => {
+    const prompts = questions.map(({ q }) => q.prompt);
+    expect(new Set(prompts).size).toBe(prompts.length);
   });
 
   it("ids de módulo y de pregunta únicos (el progreso guardado depende de ellos)", () => {

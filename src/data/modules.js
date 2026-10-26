@@ -94,6 +94,7 @@ export const MODULES = [
           good: { code: "{users.map((u) => (\n  <UserCard key={u.id} user={u} />\n))}", note: "`.map()` devuelve un array de elementos, que React sí sabe pintar." },
         },
       },
+      { callout: { k: "warn", lbl: "Paréntesis o llaves", text: "Con paréntesis `(u) => ( <li>…</li> )` el JSX se devuelve solo. Si usas **llaves** `(u) => { … }` tienes que escribir `return`; sin él la función devuelve `undefined` y la lista sale vacía. Revisa también que uses el nombre exacto de los campos de tus datos: si el objeto tiene `nombre`, `u.name` será `undefined`." } },
       { h: "La prop key", id: "key" },
       { p: "Cuando la lista cambia (se agrega, borra o reordena un elemento), React compara la lista nueva con la anterior para actualizar **solo lo necesario**. La `key` es el **identificador** que le permite saber qué elemento es cuál entre un render y otro." },
       { analogy: "Es como el **número de matrícula** de un estudiante: aunque cambie de asiento, el profesor sabe quién es. Usar el índice como key es identificar a los alumnos por el número de asiento: si alguien se cambia de lugar, todo se confunde." },
@@ -820,6 +821,7 @@ export const MODULES = [
           good: { code: 'import { Link } from "react-router-dom";\n\n<Link to="/contacto">Contacto</Link>', note: "React Router cambia la URL y el contenido **al instante**, sin recargar. El atributo es `to`, no `href`." },
         },
       },
+      { callout: { k: "tip", lbl: "Regla práctica", text: "`Link` es para las rutas **de tu propia app** (`/contacto`, `/perfil`). Para ir a **otra web** (`https://react.dev`) se usa un `<a href>` normal: ahí sí queremos que el navegador cargue otra página. Tampoco cambies de página con `window.location.href = …`: también recarga todo." } },
       {
         ex: {
           h: "App.jsx — ejemplo completo",

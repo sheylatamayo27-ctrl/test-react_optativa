@@ -6,12 +6,11 @@ const ACCENT = [76, 99, 196];
 const GRAY = [110, 120, 140];
 const SOFT = [238, 241, 250];
 
-function fecha() {
+function fecha(d = new Date()) {
   const meses = [
     "enero", "febrero", "marzo", "abril", "mayo", "junio",
     "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
   ];
-  const d = new Date();
   return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
 }
 
@@ -33,7 +32,8 @@ export function certCode(nombre) {
   return codigoVerificacion(nombre);
 }
 
-export function generarCertificado({ nombre, grupo, curso = "Optativa de React (FTE)", puntaje }) {
+// `aprobadoEl`: fecha en que aprobó (ISO). Si no se indica, la de hoy.
+export function generarCertificado({ nombre, grupo, curso = "Optativa de React (FTE)", puntaje, aprobadoEl }) {
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const W = 297, H = 210, cx = W / 2;
 
@@ -132,7 +132,7 @@ export function generarCertificado({ nombre, grupo, curso = "Optativa de React (
   doc.setFontSize(11);
   doc.setTextColor(...GRAY);
   doc.text(`Calificación: ${puntaje}%`, cx - 45, 183, { align: "center" });
-  doc.text(`Fecha: ${fecha()}`, cx + 45, 183, { align: "center" });
+  doc.text(`Fecha: ${fecha(aprobadoEl ? new Date(aprobadoEl) : new Date())}`, cx + 45, 183, { align: "center" });
 
   // Código de verificación
   const codigo = codigoVerificacion(nombre);

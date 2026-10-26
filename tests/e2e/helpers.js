@@ -2,9 +2,10 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { expect } from "@playwright/test";
-import { MODULES } from "../../src/data/modules.js";
+import { BANK, buildExam } from "../../src/data/exam.js";
 
-export const QUESTIONS = MODULES.flatMap((m) => m.questions);
+// Todas las preguntas del banco (originales + versiones), para reconocer la que se ve en pantalla
+export const QUESTIONS = BANK.flatMap((m) => m.questions);
 
 const norm = (s) => String(s).replace(/[*`]/g, "").replace(/\s+/g, " ").trim();
 const optionText = (o) => norm(o.code ?? o.text);
@@ -55,10 +56,16 @@ export async function solveOpenModule(page, plan = [true, true, true, true, true
   await expect(page.locator(".done-card")).toBeVisible();
 }
 
-// Evaluación terminada con `nCorrect` respuestas correctas (y el resto incorrectas).
-export function finishedAnswers(nCorrect = QUESTIONS.length) {
+// Preguntas del intento actual del alumno (dependen de su semilla guardada).
+export async function currentExam(page) {
+  const seed = await page.evaluate(() => JSON.parse(localStorage.getItem("react-lab-v2")).seed);
+  return buildExam(seed);
+}
+
+// Respuestas de un intento terminado con `nCorrect` correctas (y el resto incorrectas).
+export function finishedAnswers(exam, nCorrect = 20) {
   const answers = {};
-  QUESTIONS.forEach((q, i) => {
+  exam.flatMap((m) => m.questions).forEach((q, i) => {
     const ok = i < nCorrect;
     answers[q.id] = { optId: q.options.find((o) => !!o.correct === ok).id, correct: ok };
   });

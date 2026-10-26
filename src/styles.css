@@ -430,6 +430,10 @@ pre.code.mini{font-size:.8rem;padding:10px 12px}
 @media(max-width:560px){.mistake-row{grid-template-columns:1fr;gap:4px}}
 .mistake-teach{font-size:.88rem;color:var(--muted)}
 .no-cert{border-left:4px solid var(--bad)}
+.keep-cert{border-left:4px solid var(--ok)}
+.best-card{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;max-width:720px;padding:12px 16px;border-radius:12px;border:1px solid var(--ok-bd);background:var(--ok-bg);font-size:.95rem}
+.best-card>span{font-size:1.4rem}
+.best-card>div{flex:1;min-width:200px}
 .res-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
 @media(max-width:760px){.res-stats{grid-template-columns:repeat(2,1fr)}}
 .stat{padding:13px;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow-sm)}
