@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("hay que confirmar la respuesta: marcar una opción no la registra", async ({ page }) => {
-  await expect(page.locator(".exam-note")).toContainText("Un solo intento por pregunta");
+  await expect(page.locator(".exam-note")).toHaveCount(0); // el aviso de la evaluación se quitó
   const confirm = page.getByRole("button", { name: "Confirmar respuesta" });
   await expect(confirm).toBeDisabled();
 

@@ -370,8 +370,6 @@ pre.code.mini{font-size:.8rem;padding:10px 12px}
 .q-confirm{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px}
 .q-confirm .faint{font-size:.85rem;flex:1;min-width:180px}
 .q-confirm .hint-btn{margin-top:0}
-.exam-note{margin-bottom:14px;padding:11px 14px;border-radius:11px;border:1px solid var(--warn);background:var(--warn-bg);font-size:.9rem}
-.exam-note b{color:var(--warn)}
 .opt.shake{animation:shake .4s ease}
 .opt.celebrate{animation:pop .45s ease}
 .fb{margin-top:16px;border-radius:12px;padding:14px 16px;font-size:.94rem;border:1px solid var(--border);animation:slide-in .25s ease-out}

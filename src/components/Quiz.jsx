@@ -66,13 +66,6 @@ export default function Quiz({
   return (
     <div className="wrap quiz">
       <Watermark text={watermark} />
-      {answeredCount === 0 && (
-        <div className="exam-note">
-          <b>⚠ Un solo intento por pregunta.</b> Al confirmar, tu respuesta queda registrada y verás la correcta con su
-          explicación. Si tienes dudas, repasa la lección antes de empezar.
-        </div>
-      )}
-
       <div className="q-progress">
         <span className="lbl">
           Pregunta {i + 1} de {order.length}
