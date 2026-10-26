@@ -30,7 +30,7 @@ export const VARIANTS = {
       options: [
         { id: "a", code: 'function Avatar() {\n  return <img src="foto.png" alt="Foto de perfil" />;\n}', correct: true, feedback: "Nombre en mayúscula, devuelve JSX y la etiqueta `<img />` está cerrada. Cumple todo lo que React espera de un componente." },
         { id: "b", code: 'function avatar() {\n  return <img src="foto.png" alt="Foto de perfil" />;\n}', correct: false, feedback: "Al escribirlo como `<avatar />`, React lo trataría como una etiqueta HTML desconocida (en minúscula), no como tu componente. Los componentes empiezan con **mayúscula**." },
-        { id: "c", code: 'function Avatar() {\n  return { src: "foto.png" };\n}', correct: false, feedback: "Devuelve un objeto de datos, no interfaz. React lanzaría *Los objetos no son válidos como hijo de React*. Un componente devuelve **JSX**." },
+        { id: "c", code: 'function Avatar() {\n  return { src: "foto.png" };\n}', correct: false, feedback: "Devuelve un objeto de datos, no interfaz. React lanzaría *Objects are not valid as a React child*. Un componente devuelve **JSX**." },
         { id: "d", code: 'function Avatar() {\n  console.log("foto.png");\n}', correct: false, feedback: "Solo escribe en la consola y no devuelve nada (`undefined`): en pantalla no aparece ninguna imagen." },
       ],
       teach: "Componente válido = nombre con mayúscula + `return` de JSX.",
@@ -129,7 +129,7 @@ export const VARIANTS = {
       context: [
         { kind: "code", title: "Comentarios.jsx", code: "function Comentarios({ lista }) {\n  return (\n    <ul>\n      {lista.map((c) => (\n        <li>{c.autor}: {c.texto}</li>\n      ))}\n    </ul>\n  );\n}" },
         { kind: "console", lines: [
-          { t: '⚠ Aviso: cada hijo de una lista debe tener una prop "key" única.', k: "muted" },
+          { t: '⚠ Warning: Each child in a list should have a unique "key" prop.', k: "muted" },
           { t: "> console.log(lista)" },
           { t: '[{ id: "c1", autor: "Ana", texto: "¡Genial!" }, { id: "c2", autor: "Ana", texto: "Gracias" }]' },
         ] },
@@ -168,7 +168,7 @@ export const VARIANTS = {
     // --- Cuarta versión de cada hueco ---
     {
       id: "m1q1d", slot: "m1q1", type: "concept", topic: "Un solo elemento raíz", ref: "jsx",
-      prompt: "Este componente no compila: *Los elementos JSX adyacentes deben ir envueltos en una etiqueta contenedora*. ¿Cuál es la corrección?",
+      prompt: "Este componente no compila: *Adjacent JSX elements must be wrapped in an enclosing tag*. ¿Cuál es la corrección?",
       context: [{ kind: "code", title: "Perfil.jsx", code: "function Perfil() {\n  return (\n    <h2>Ana Torres</h2>\n    <p>Desarrolladora web</p>\n  );\n}" }],
       options: [
         { id: "a", code: "function Perfil() {\n  return (\n    <>\n      <h2>Ana Torres</h2>\n      <p>Desarrolladora web</p>\n    </>\n  );\n}", correct: true, feedback: "Un componente devuelve **un solo elemento raíz**. El fragmento `<>...</>` agrupa el `<h2>` y el `<p>` sin añadir ninguna etiqueta extra al HTML final (un `<div>` también valdría)." },
@@ -177,7 +177,7 @@ export const VARIANTS = {
         { id: "d", code: "function Perfil() {\n  return (\n    <h2>Ana Torres</h2>,\n    <p>Desarrolladora web</p>\n  );\n}", correct: false, feedback: "Compila, pero la coma de JavaScript se queda solo con el **último** valor: se vería el `<p>` y el `<h2>` desaparecería. Hace falta un elemento padre." },
       ],
       teach: "Si devuelves varios elementos, envuélvelos en **un padre**: un fragmento `<>...</>` o un `<div>`.",
-      hint: "El error pide “una etiqueta contenedora”: una que envuelva a las demás.",
+      hint: "El error pide “an enclosing tag”: una etiqueta que envuelva a las demás.",
       example: { code: "function Tarjeta() {\n  return (\n    <div className=\"tarjeta\">\n      <h3>Título</h3>\n      <p>Descripción</p>\n    </div>\n  );\n}" },
     },
     {
@@ -213,7 +213,7 @@ export const VARIANTS = {
         { id: "a", code: "{ranking.map((nombre, i) => <li key={nombre}>{i + 1}. {nombre}</li>)}", correct: true, feedback: "`.map()` pasa a la función el elemento **y su posición** (`i`, que empieza en 0). Sumando 1 se numera desde 1." },
         { id: "b", code: "{ranking.map((nombre, i) => <li key={nombre}>{i}. {nombre}</li>)}", correct: false, feedback: "La posición empieza en **0**: saldría “0. Ana”, “1. Luis”… Hay que mostrar `i + 1`." },
         { id: "c", code: "{ranking.map((i, nombre) => <li key={i}>{i + 1}. {nombre}</li>)}", correct: false, feedback: "Los parámetros están al revés: el **primero** es siempre el elemento y el segundo la posición. Aquí `i` sería “Ana” y saldría “Ana1. 0”." },
-        { id: "d", code: "{ranking.map((nombre) => <li key={nombre}>{i + 1}. {nombre}</li>)}", correct: false, feedback: "La función no recibe `i`: la variable no existe y React lanza *Error de referencia: i no está definida*." },
+        { id: "d", code: "{ranking.map((nombre) => <li key={nombre}>{i + 1}. {nombre}</li>)}", correct: false, feedback: "La función no recibe `i`: la variable no existe y React lanza *ReferenceError: i is not defined*." },
       ],
       teach: "`.map((elemento, posicion) => ...)`: el segundo parámetro es la posición, que empieza en 0.",
       hint: "¿En qué número empieza JavaScript a contar las posiciones de un array?",
@@ -225,7 +225,7 @@ export const VARIANTS = {
       context: [
         { kind: "code", title: "ListaUsuarios.jsx", code: "function ListaUsuarios({ users }) {\n  return (\n    <div>\n      {users.map((u) => (\n        <UserCard key={u.id} user={u} />\n      ))}\n    </div>\n  );\n}" },
         { kind: "code", title: "UserCard.jsx", code: "function UserCard({ usuario }) {\n  return <h3>{usuario.nombre}</h3>;\n}" },
-        { kind: "console", lines: [{ t: "✕ Error de tipo: no se pueden leer propiedades de undefined (leyendo 'nombre')" }] },
+        { kind: "console", lines: [{ t: "✕ TypeError: Cannot read properties of undefined (reading 'nombre')" }] },
       ],
       options: [
         { id: "a", code: "function UserCard({ user }) {\n  return <h3>{user.nombre}</h3>;\n}", correct: true, feedback: "El padre envía la prop `user`, pero el hijo leía `usuario`, que no existe y vale `undefined`. Con el mismo nombre (`user`), la tarjeta recibe los datos." },
@@ -303,7 +303,7 @@ export const VARIANTS = {
       prompt: "Quieres que el botón muestre un mensaje **solo al pulsarlo**. ¿Cuál es correcto?",
       options: [
         { id: "a", code: '<button onClick={() => setMensaje("Enviado")}>Enviar</button>', correct: true, feedback: "La función flecha se entrega a React y se ejecuta **solo al hacer clic**." },
-        { id: "b", code: '<button onClick={setMensaje("Enviado")}>Enviar</button>', correct: false, feedback: "Se ejecuta **al dibujar** el botón: cambia el estado, se vuelve a dibujar, se ejecuta otra vez… *Demasiados re-renders*." },
+        { id: "b", code: '<button onClick={setMensaje("Enviado")}>Enviar</button>', correct: false, feedback: "Se ejecuta **al dibujar** el botón: cambia el estado, se vuelve a dibujar, se ejecuta otra vez… *Too many re-renders*." },
         { id: "c", code: '<button onclick={() => setMensaje("Enviado")}>Enviar</button>', correct: false, feedback: "En React los eventos van en camelCase: `onClick`, con **C mayúscula**. `onclick` no funciona y React muestra un aviso." },
         { id: "d", code: "<button onClick=\"setMensaje('Enviado')\">Enviar</button>", correct: false, feedback: "Es un **texto**, no una función. React espera una función en `onClick` y lanza un error." },
       ],
@@ -361,7 +361,7 @@ export const VARIANTS = {
       options: [
         { id: "a", code: "const [abierto, setAbierto] = useState(false);\n\n<button onClick={() => setAbierto(!abierto)}>", correct: true, feedback: "Pasas el valor a estado y lo cambias con su setter dentro de una flecha. Cada clic invierte `abierto` y React vuelve a dibujar." },
         { id: "b", code: "const [abierto, setAbierto] = useState(false);\n\n<button onClick={() => (abierto = !abierto)}>", correct: false, feedback: "Hay estado, pero se sigue cambiando a mano. Eso no avisa a React (y con `const` da error). Hay que usar `setAbierto`." },
-        { id: "c", code: "const [abierto, setAbierto] = useState(false);\n\n<button onClick={setAbierto(!abierto)}>", correct: false, feedback: "Sin flecha, `setAbierto` se ejecuta al dibujar: bucle infinito (*Demasiados re-renders*)." },
+        { id: "c", code: "const [abierto, setAbierto] = useState(false);\n\n<button onClick={setAbierto(!abierto)}>", correct: false, feedback: "Sin flecha, `setAbierto` se ejecuta al dibujar: bucle infinito (*Too many re-renders*)." },
         { id: "d", code: "let abierto = true;\n\n<button onClick={() => (abierto = !abierto)}>", correct: false, feedback: "Solo cambia el valor con el que empieza. Sigue siendo una variable normal que React no observa." },
       ],
       teach: "Mostrar/ocultar = estado booleano + `setX(!x)` en el `onClick`.",
@@ -402,7 +402,7 @@ export const VARIANTS = {
       prompt: "Declara un estado `tareas` que empiece como una **lista vacía**, para luego pintarla con `.map()`:",
       options: [
         { id: "a", code: "const [tareas, setTareas] = useState([]);", correct: true, feedback: "Valor inicial `[]`: un array vacío. `tareas.map(...)` funciona desde el primer render (no pinta nada hasta que agregues tareas)." },
-        { id: "b", code: "const [tareas, setTareas] = useState();", correct: false, feedback: "Sin valor inicial, `tareas` empieza en `undefined` y `tareas.map(...)` lanza *No se pueden leer propiedades de undefined (leyendo 'map')*." },
+        { id: "b", code: "const [tareas, setTareas] = useState();", correct: false, feedback: "Sin valor inicial, `tareas` empieza en `undefined` y `tareas.map(...)` lanza *Cannot read properties of undefined (reading 'map')*." },
         { id: "c", code: "const [setTareas, tareas] = useState([]);", correct: false, feedback: "El orden está al revés: `useState` devuelve **primero el valor** y después el setter." },
         { id: "d", code: "const tareas = useState([]);", correct: false, feedback: "`useState` devuelve un **par** `[valor, setter]`. Aquí `tareas` sería ese par, no la lista, y no tendrías cómo actualizarla." },
       ],
@@ -416,8 +416,8 @@ export const VARIANTS = {
       options: [
         { id: "a", code: "<button onClick={() => setCantidad(cantidad + 1)}>+</button>\n<button onClick={() => setCantidad(cantidad - 1)}>−</button>", correct: true, feedback: "Cada botón recibe una **función flecha** que React ejecuta al hacer clic, y dentro se llama al setter con el valor nuevo." },
         { id: "b", code: "<button onClick={() => cantidad + 1}>+</button>\n<button onClick={() => cantidad - 1}>−</button>", correct: false, feedback: "Calcula el número, pero **no lo guarda**: sin llamar a `setCantidad`, React no se entera y la pantalla no cambia." },
-        { id: "c", code: "<button onClick={() => setCantidad(cantidad++)}>+</button>\n<button onClick={() => setCantidad(cantidad--)}>−</button>", correct: false, feedback: "`cantidad++` intenta modificar la constante directamente y lanza *Asignación a una variable constante*. El estado solo se cambia con el setter: `cantidad + 1`." },
-        { id: "d", code: "<button onClick={setCantidad(cantidad + 1)}>+</button>\n<button onClick={setCantidad(cantidad - 1)}>−</button>", correct: false, feedback: "Sin `() =>`, el setter se **ejecuta al pintar** el botón, no al pulsarlo: cada render cambia el estado y provoca otro render (*Demasiados re-renders*)." },
+        { id: "c", code: "<button onClick={() => setCantidad(cantidad++)}>+</button>\n<button onClick={() => setCantidad(cantidad--)}>−</button>", correct: false, feedback: "`cantidad++` intenta modificar la constante directamente y lanza *Assignment to constant variable*. El estado solo se cambia con el setter: `cantidad + 1`." },
+        { id: "d", code: "<button onClick={setCantidad(cantidad + 1)}>+</button>\n<button onClick={setCantidad(cantidad - 1)}>−</button>", correct: false, feedback: "Sin `() =>`, el setter se **ejecuta al pintar** el botón, no al pulsarlo: cada render cambia el estado y provoca otro render (*Too many re-renders*)." },
       ],
       teach: "En `onClick` va una **función** (`() => setX(...)`), y el estado se cambia siempre con su setter.",
       hint: "Dos preguntas para cada opción: ¿se ejecuta al hacer clic? ¿llama al setter?",
@@ -446,7 +446,7 @@ export const VARIANTS = {
       options: [
         { id: "a", code: "<button onClick={() => setVisitante(visitante + 1)}>Gol visitante</button>", correct: true, feedback: "Cada estado tiene **su propio setter**. El botón del visitante debe llamar a `setVisitante` y partir del valor de `visitante`." },
         { id: "b", code: "<button onClick={() => setLocal(visitante + 1)}>Gol visitante</button>", correct: false, feedback: "Sigue usando `setLocal`: guardaría en el marcador **local** los goles del visitante más uno. El setter decide qué estado cambia." },
-        { id: "c", code: "<button onClick={() => (visitante = visitante + 1)}>Gol visitante</button>", correct: false, feedback: "`visitante` es una constante: asignarle un valor lanza *Asignación a una variable constante*. El estado se cambia con `setVisitante`." },
+        { id: "c", code: "<button onClick={() => (visitante = visitante + 1)}>Gol visitante</button>", correct: false, feedback: "`visitante` es una constante: asignarle un valor lanza *Assignment to constant variable*. El estado se cambia con `setVisitante`." },
         { id: "d", code: "<button onClick={() => setVisitante(local + 1)}>Gol visitante</button>", correct: false, feedback: "El setter es el correcto, pero parte de `local`: si el local lleva 3, el visitante pasaría a 4 de golpe. Hay que sumar sobre `visitante`." },
       ],
       teach: "Con varios estados, cada uno se cambia con **su** setter y a partir de **su** valor.",
@@ -517,7 +517,7 @@ export const VARIANTS = {
     // --- Hueco m3q3: carga, error y datos ---
     {
       id: "m3q3b", slot: "m3q3", type: "concept", topic: "Error al leer data", ref: "estados",
-      prompt: "Este componente se rompe al cargar con *No se pueden leer propiedades de null (leyendo 'title')*. ¿Por qué?",
+      prompt: "Este componente se rompe al cargar con *Cannot read properties of null (reading 'title')*. ¿Por qué?",
       context: [{ kind: "code", title: "Post.jsx", code: "function Post({ id }) {\n  const { data, loading } = usePost(id);\n  return <h2>{data.title}</h2>;\n}" }],
       options: [
         { id: "a", text: "En el primer render `data` todavía es `null`: falta comprobar `loading` antes de usar `data`", correct: true, feedback: "Los datos tardan en llegar. Mientras tanto `data` es `null` y `null.title` rompe la app. Hay que mostrar algo mientras `loading` sea `true`." },
@@ -592,7 +592,7 @@ export const VARIANTS = {
     },
     {
       id: "m3q5c", slot: "m3q5", type: "applied", topic: "De personajes a episodios", ref: "adaptar",
-      prompt: "Ejercicio práctico. Tienes un hook que trae **personajes** de Rick y Morty. Ahora quieres traer **episodios** según la documentación de abajo. ¿Qué `fetch` es el correcto?",
+      prompt: "Ejercicio práctico. Tienes un hook que trae **personajes** de Rick and Morty. Ahora quieres traer **episodios** según la documentación de abajo. ¿Qué `fetch` es el correcto?",
       context: [
         { kind: "code", title: "useCharacter.js (actual)", code: "useEffect(() => {\n  setLoading(true);\n  fetch(`https://rickandmortyapi.com/api/character/${id}`)\n    .then((r) => r.json())\n    .then((json) => setData(json))\n    .finally(() => setLoading(false));\n}, [id]);" },
         { kind: "doc", title: "📘 Documentación — Episodios", endpoint: "GET https://rickandmortyapi.com/api/episode/{id}", desc: "Devuelve un episodio por su id. Respuesta (campos principales):", fields: [["id", "número — identificador"], ["name", "texto — título del episodio"], ["air_date", "texto — fecha de emisión"], ["episode", "texto — código, p. ej. S01E01"]] },
@@ -674,7 +674,7 @@ export const VARIANTS = {
       options: [
         { id: "a", code: '<div>\n  <h3>{data.title}</h3>\n  <p>{data.completed ? "✓ Hecha" : "Pendiente"}</p>\n</div>', correct: true, feedback: "Al cambiar de API también cambian los **campos**: las tareas no tienen `name` ni `email` (por eso salían vacíos, `undefined`). Se usan `title` y `completed`, como dice la documentación." },
         { id: "b", code: "<div>\n  <h3>{data.todo.title}</h3>\n  <p>{data.todo.completed}</p>\n</div>", correct: false, feedback: "La respuesta no viene dentro de un campo `todo`: `title` está directamente en `data`. `data.todo` es `undefined` y leer `.title` daría error." },
-        { id: "c", code: "<div>\n  <h3>{title}</h3>\n  <p>{completed}</p>\n</div>", correct: false, feedback: "`title` y `completed` no son variables del componente: hay que leerlas de `data`. Daría *Error de referencia: title no está definida*." },
+        { id: "c", code: "<div>\n  <h3>{title}</h3>\n  <p>{completed}</p>\n</div>", correct: false, feedback: "`title` y `completed` no son variables del componente: hay que leerlas de `data`. Daría *ReferenceError: title is not defined*." },
         { id: "d", code: "<div>\n  <h3>{data.name}</h3>\n  <p>{data.completed}</p>\n</div>", correct: false, feedback: "`name` es un campo de los **usuarios**, no de las tareas: el título seguiría vacío. Y `completed` es un booleano, que React no pinta." },
       ],
       teach: "Al adaptar un hook a otra API, revisa también el componente: usa los **campos** que indica la nueva documentación.",
@@ -688,10 +688,10 @@ export const VARIANTS = {
     // --- Hueco m4q1: qué permite react-router ---
     {
       id: "m4q1b", slot: "m4q1", type: "concept", topic: "Qué es una SPA", ref: "spa",
-      prompt: "¿Qué es una SPA (*aplicación de una sola página*)?",
+      prompt: "¿Qué es una SPA (*Single Page Application*)?",
       options: [
         { id: "a", text: "Una app que carga una vez y cambia de vista sin recargar la página", correct: true, feedback: "La página se carga una sola vez y, al navegar, solo cambia el contenido necesario: más rápido y sin perder el estado." },
-        { id: "b", text: "Una web que solo tiene una sección", correct: false, feedback: "Una SPA puede tener muchas secciones (inicio, productos, contacto…). “Una sola página” se refiere a que el documento HTML se carga **una vez**." },
+        { id: "b", text: "Una web que solo tiene una sección", correct: false, feedback: "Una SPA puede tener muchas secciones (inicio, productos, contacto…). “Single page” se refiere a que el documento HTML se carga **una vez**." },
         { id: "c", text: "Una app que no usa JavaScript", correct: false, feedback: "Al contrario: las SPA dependen de JavaScript para cambiar de vista sin recargar." },
         { id: "d", text: "Una web que se recarga en cada clic", correct: false, feedback: "Eso describe una web tradicional. La SPA justamente evita esas recargas." },
       ],
@@ -775,7 +775,7 @@ export const VARIANTS = {
       prompt: "¿Cuántos `<BrowserRouter>` debe tener una aplicación?",
       options: [
         { id: "a", text: "Uno solo, envolviendo toda la app", correct: true, feedback: "Un único `BrowserRouter` crea el contexto de navegación para toda la aplicación." },
-        { id: "b", text: "Uno por cada página", correct: false, feedback: "Anidar varios provoca el error *No se puede renderizar un <Router> dentro de otro <Router>*." },
+        { id: "b", text: "Uno por cada página", correct: false, feedback: "Anidar varios provoca el error *You cannot render a <Router> inside another <Router>*." },
         { id: "c", text: "Uno por cada `<Link>`", correct: false, feedback: "Los `Link` usan el `BrowserRouter` que envuelve la app; no necesitan uno propio." },
         { id: "d", text: "Ninguno, si ya usas `<Routes>`", correct: false, feedback: "`Routes` necesita estar dentro de un router. Sin `BrowserRouter`, React Router lanza un error." },
       ],
@@ -818,7 +818,7 @@ export const VARIANTS = {
       context: [
         { kind: "code", title: "main.jsx", code: 'ReactDOM.createRoot(document.getElementById("root")).render(\n  <App />\n);' },
         { kind: "code", title: "App.jsx", code: '<Routes>\n  <Route path="/" element={<Inicio />} />\n  <Route path="/contacto" element={<Contacto />} />\n</Routes>' },
-        { kind: "console", lines: [{ t: "✕ Error: useRoutes() solo puede usarse dentro de un componente <Router>." }] },
+        { kind: "console", lines: [{ t: "✕ Error: useRoutes() may be used only in the context of a <Router> component." }] },
       ],
       options: [
         { id: "a", code: "// main.jsx\n<BrowserRouter>\n  <App />\n</BrowserRouter>", correct: true, feedback: "El error lo dice: `Routes` necesita estar dentro de un router. Envolver `<App />` con `BrowserRouter` en `main.jsx` lo resuelve para toda la app." },
@@ -826,7 +826,7 @@ export const VARIANTS = {
         { id: "c", code: '// App.jsx (sin Routes)\n<Route path="/" element={<Inicio />} />\n<Route path="/contacto" element={<Contacto />} />', correct: false, feedback: "Quitar `Routes` no ayuda: un `Route` suelto también da error, y sigue faltando el router." },
         { id: "d", code: '<Route path="/" component={Inicio} />', correct: false, feedback: "Es la sintaxis antigua (v5) y no tiene relación con el error: lo que falta es `BrowserRouter`." },
       ],
-      teach: "Si React Router dice “solo puede usarse dentro de un <Router>”, falta `BrowserRouter` envolviendo la app.",
+      teach: "Si React Router dice “only in the context of a <Router>”, falta `BrowserRouter` envolviendo la app.",
       hint: "Lee el mensaje de error: ¿qué componente dice que falta?",
       example: { title: "main.jsx corregido", code: 'import { BrowserRouter } from "react-router-dom";\n\nReactDOM.createRoot(document.getElementById("root")).render(\n  <BrowserRouter>\n    <App />\n  </BrowserRouter>\n);' },
     },
@@ -860,7 +860,7 @@ export const VARIANTS = {
     },
     {
       id: "m4q3d", slot: "m4q3", type: "concept", topic: "Route fuera de Routes", ref: "routes",
-      prompt: "Al abrir la app aparece *Un <Route> solo puede usarse como hijo de un elemento <Routes>*. ¿Cómo se corrige?",
+      prompt: "Al abrir la app aparece *A <Route> is only ever to be used as the child of <Routes> element*. ¿Cómo se corrige?",
       context: [{ kind: "code", title: "App.jsx", code: 'function App() {\n  return (\n    <>\n      <Route path="/" element={<Inicio />} />\n      <Route path="/blog" element={<Blog />} />\n    </>\n  );\n}' }],
       options: [
         { id: "a", code: '<Routes>\n  <Route path="/" element={<Inicio />} />\n  <Route path="/blog" element={<Blog />} />\n</Routes>', correct: true, feedback: "Cada `Route` debe estar **dentro de `Routes`**: es quien mira la URL y elige qué ruta mostrar." },
@@ -874,7 +874,7 @@ export const VARIANTS = {
     },
     {
       id: "m4q4d", slot: "m4q4", type: "concept", topic: "Menú fuera del router", ref: "browserrouter",
-      prompt: "La app falla con *useHref() solo puede usarse dentro de un componente <Router>*. `<Menu />` tiene varios `<Link>`. ¿Cuál es la corrección de `main.jsx`?",
+      prompt: "La app falla con *useHref() may be used only in the context of a <Router> component*. `<Menu />` tiene varios `<Link>`. ¿Cuál es la corrección de `main.jsx`?",
       context: [{ kind: "code", title: "main.jsx", code: 'ReactDOM.createRoot(document.getElementById("root")).render(\n  <>\n    <Menu />\n    <BrowserRouter>\n      <App />\n    </BrowserRouter>\n  </>\n);' }],
       options: [
         { id: "a", code: "<BrowserRouter>\n  <Menu />\n  <App />\n</BrowserRouter>", correct: true, feedback: "`Menu` usa `<Link>`, y todo `Link` debe estar **dentro** de `BrowserRouter`. Al envolver los dos, el menú y las rutas comparten el mismo router." },

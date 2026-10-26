@@ -175,10 +175,10 @@ export function StateDemo() {
           <div className="pane-h bad">✕ Con variable normal</div>
           <div className="counter">
             <b>{clicks}</b>
-            <span>clics en pantalla</span>
+            <span>clicks en pantalla</span>
           </div>
           <div className="demo-btns">
-            <button className="btn sm ghost" onClick={sumarLet}>+1 clic</button>
+            <button className="btn sm ghost" onClick={sumarLet}>+1 click</button>
           </div>
           <Code mini code={"let clicks = 0;\n\n<button onClick={() => clicks++}>"} />
         </div>
@@ -202,7 +202,7 @@ const FAKE_USERS = {
 // Simula una API lenta para que se vea el estado de carga.
 function fakeFetch(id, fail) {
   return new Promise((resolve, reject) => {
-    setTimeout(() => (fail ? reject(new Error("Error de red")) : resolve(FAKE_USERS[id])), 1100);
+    setTimeout(() => (fail ? reject(new Error("Network error")) : resolve(FAKE_USERS[id])), 1100);
   });
 }
 
@@ -249,7 +249,7 @@ export function FetchDemo() {
 
   return (
     <DemoFrame
-      title="Un hook personalizado con carga, error y datos"
+      title="Un custom hook con carga, error y datos"
       intro="Cambia el **id** y observa cómo el hook pasa por *cargando* antes de mostrar los datos. Activa **Simular error** para ver el camino del error."
       code={
         'const { data, loading, error } = useUser(id);\n\n' +
